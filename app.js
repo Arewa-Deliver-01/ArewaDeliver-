@@ -1,1 +1,0 @@
-console.log("ArewaDeliver app is running...");
