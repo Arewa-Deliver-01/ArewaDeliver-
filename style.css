@@ -1,3 +1,4 @@
+/* Global Page Settings */
 body {
   margin: 0;
   padding: 0;
@@ -7,7 +8,7 @@ body {
   text-align: center;
 }
 
-/* Header */
+/* Header Section */
 header {
   background: #2c3e50;
   padding: 20px 0;
@@ -18,6 +19,23 @@ header {
   margin: 0;
   font-size: 28px;
   font-weight: bold;
+}
+
+/* Navigation Bar */
+nav {
+  margin-top: 10px;
+}
+
+nav a {
+  margin: 0 15px;
+  text-decoration: none;
+  color: white;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+nav a:hover {
+  color: #ddd;
 }
 
 /* Hero Section */
@@ -36,7 +54,7 @@ header {
   color: #555;
 }
 
-/* Button */
+/* Buttons */
 .btn {
   display: inline-block;
   padding: 12px 25px;
@@ -46,10 +64,27 @@ header {
   border-radius: 6px;
   font-size: 16px;
   transition: 0.3s;
+  cursor: pointer;
 }
 
 .btn:hover {
   background: #1a252f;
+}
+
+/* Form Styling */
+.delivery-form {
+  max-width: 400px;
+  margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.delivery-form input {
+  padding: 12px;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
 }
 
 /* Footer */
