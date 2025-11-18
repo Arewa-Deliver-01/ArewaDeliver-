@@ -1,74 +1,88 @@
-import os
 from flask import Flask, render_template, request, jsonify
-from flask_cors import CORS
-import openai
 import sqlite3
 
-openai.api_key = os.environ.get("OPENAI_API_KEY")
-
 app = Flask(__name__)
-CORS(app)
 
-# Initialize database
-def init_db():
-    conn = sqlite3.connect("deliveries.db")
+# -----------------------------
+# DATABASE SETUP
+# -----------------------------
+def get_db():
+    conn = sqlite3.connect('arewadeliver.db')
+    conn.row_factory = sqlite3.Row
+    return conn
+
+def create_tables():
+    conn = get_db()
     cursor = conn.cursor()
+
+    # Customers, vendors, riders all share similar profile structure
     cursor.execute("""
-    CREATE TABLE IF NOT EXISTS deliveries (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT,
-        pickup TEXT,
-        delivery TEXT,
-        package TEXT
-    )
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            role TEXT,        -- customer, vendor, rider
+            name TEXT,
+            phone TEXT,
+            email TEXT,
+            address TEXT,
+            profile_image TEXT DEFAULT 'default.png',
+            wallet_balance REAL DEFAULT 0
+        )
     """)
+
+    # transactions table for wallets
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS transactions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER,
+            amount REAL,
+            type TEXT,     -- credit or debit
+            category TEXT, -- payment, delivery fee, commission, etc.
+            date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+
     conn.commit()
     conn.close()
 
-init_db()
+create_tables()
 
-@app.route("/")
+# -----------------------------
+# ROUTES
+# -----------------------------
+
+@app.route('/')
 def home():
     return render_template("index.html")
 
-@app.route("/request_delivery", methods=["POST"])
-def request_delivery():
-    data = request.json
-    name = data.get("name")
-    pickup = data.get("pickup")
-    delivery = data.get("delivery")
-    package = data.get("package")
+@app.route('/customer')
+def customer_profile():
+    return render_template("customer.html")
 
-    conn = sqlite3.connect("deliveries.db")
+@app.route('/rider')
+def rider_profile():
+    return render_template("rider.html")
+
+@app.route('/vendor')
+def vendor_profile():
+    return render_template("vendor.html")
+
+
+# API FOR SAVING PROFILE DATA
+@app.route('/save_profile', methods=['POST'])
+def save_profile():
+    data = request.json
+    conn = get_db()
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO deliveries (name, pickup, delivery, package) VALUES (?, ?, ?, ?)",
-                   (name, pickup, delivery, package))
+
+    cursor.execute("""
+        INSERT INTO users (role, name, phone, email, address)
+        VALUES (?, ?, ?, ?, ?)
+    """, (data['role'], data['name'], data['phone'], data['email'], data['address']))
+
     conn.commit()
     conn.close()
 
-    return jsonify({"status": "success", "message": "Delivery request stored successfully."})
-
-@app.route("/api/ask", methods=["POST"])
-def ask_ai():
-    data = request.json
-    user_message = data.get("message", "")
-
-    if not user_message:
-        return jsonify({"reply": "Please ask a question."})
-
-    try:
-        completion = openai.ChatCompletion.create(
-            model="gpt-4",
-            messages=[
-                {"role": "system", "content": "You are ArewaBot, a helpful delivery assistant."},
-                {"role": "user", "content": user_message}
-            ]
-        )
-        reply = completion.choices[0].message.content
-    except Exception as e:
-        reply = "Sorry, something went wrong with the AI."
-
-    return jsonify({"reply": reply})
+    return jsonify({"status": "success", "message": "Profile saved successfully"})
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080)
+    app.run(debug=True)
