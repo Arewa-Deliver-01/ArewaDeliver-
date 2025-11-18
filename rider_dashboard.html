@@ -1,23 +1,70 @@
-<!doctype html>
-<html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Rider Dashboard</title><link rel="stylesheet" href="style.css" /></head><body>
-<header><h1 class="logo">ArewaDeliver</h1><nav><a href="index.html">Home</a><a href="profile.html">Profile</a><a href="wallet.html">Wallet</a><a href="logout.html" id="logoutLink">Logout</a></nav></header>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rider Dashboard - ArewaDeliver</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+<style>
+  body{background:#f8f8f8;margin:0;font-family:Arial;}
+  header{background:#222;color:white;padding:15px;display:flex;justify-content:space-between;align-items:center;}
+  header .logo{color:#c59d45;font-size:22px;font-weight:bold;}
+  nav a{color:white;margin-left:15px;text-decoration:none;font-weight:500;}
+  nav a:hover{color:#c59d45;}
+
+  .dashboard{padding:20px;}
+  .card-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:15px;margin-top:20px;
+  }
+  .dash-card{
+    background:white;padding:20px;border-radius:12px;
+    border-top:5px solid #c59d45;text-align:center;
+    box-shadow:0 2px 6px rgba(0,0,0,0.1);
+  }
+  .dash-card i{font-size:30px;color:#c59d45;margin-bottom:10px;}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="logo">ArewaDeliver</div>
+  <nav>
+    <a href="rider_dashboard.html">Dashboard</a>
+    <a href="wallet.html">Wallet</a>
+    <a href="profile.html">Profile</a>
+    <a href="logout.html">Logout</a>
+  </nav>
+</header>
+
 <main class="dashboard">
-  <h2>Rider Dashboard</h2>
-  <div id="riderCard" class="profile-card"></div>
-  <section>
-    <h3>Available deliveries (demo)</h3>
-    <div id="jobs"></div>
-  </section>
+  <h2>Welcome, Rider</h2>
+
+  <div class="card-grid">
+
+    <a class="dash-card">
+      <i class="fa-solid fa-list"></i>
+      <h3>Available Deliveries</h3>
+    </a>
+
+    <a class="dash-card">
+      <i class="fa-solid fa-clock"></i>
+      <h3>Ongoing Delivery</h3>
+    </a>
+
+    <a href="wallet.html" class="dash-card">
+      <i class="fa-solid fa-wallet"></i>
+      <h3>Wallet</h3>
+    </a>
+
+    <a href="profile.html" class="dash-card">
+      <i class="fa-solid fa-id-card"></i>
+      <h3>Your Profile</h3>
+    </a>
+  </div>
 </main>
-<script>
-(function(){
-  const session = JSON.parse(localStorage.getItem('arewa_session')||'null');
-  if(!session || session.role!=='rider') location.href='login.html';
-  const users = JSON.parse(localStorage.getItem('arewa_users')||'[]');
-  const user = users.find(u=>u.email===session.email);
-  document.getElementById('riderCard').innerHTML = `<div class="avatar">${user.fullname.charAt(0)}</div>
-  <div><strong>${user.fullname}</strong><p>${user.rider_vehicle||'No vehicle set'}</p><p>${user.phone}</p><p>Wallet: ₦${user.wallet.balance}</p></div>`;
-  document.getElementById('logoutLink').addEventListener('click', ()=>{ localStorage.removeItem('arewa_session'); location.href='index.html'; });
-})();
-</script>
-</body></html>
+
+</body>
+</html>
