@@ -1,11 +1,15 @@
-# ArewaDeliver
+# ArewaDeliver (Option 2 - Unified Auth Frontend)
 
-Digital delivery platform for Katsina State.
+This package contains a full frontend prototype for a unified login/register system with separate dashboards for Customer, Vendor and Rider.
 
-## Features
+Features:
+- Register with role (customer/vendor/rider)
+- Login (demo using localStorage)
+- Role-based dashboards and pages: profile, wallet, KYC
+- Demo wallet & transactions stored in the browser (localStorage)
+- Prepared `app.js` placeholder to call a real backend API (replace API_BASE)
 
-- Request a delivery online
-- Track deliveries in real-time
-- AI-powered chatbot assistance
-- Recent deliveries showcase
-- Mobile-friendly and responsive design
+Next steps:
+- Implement backend authentication (Flask + DB) and connect to Render
+- Integrate payments (OPay, PalmPay) for vendor/rider registration fees
+- Migrate wallet to server-side DB (Postgres)
