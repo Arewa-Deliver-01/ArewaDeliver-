@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Profile - ArewaDeliver</title><link rel="stylesheet" href="style.css" /></head><body>
+<header><h1 class="logo">ArewaDeliver</h1><nav><a href="index.html">Home</a><a href="profile.html">Profile</a><a href="wallet.html">Wallet</a><a href="logout.html" id="logoutLink">Logout</a></nav></header>
+<main class="form-wrap">
+  <h2>Your Profile</h2>
+  <div id="profileArea"></div>
+  <form id="profileForm" style="display:none">
+    <input name="fullname" placeholder="Full name" />
+    <input name="phone" placeholder="Phone" />
+    <input name="address" placeholder="Address" />
+    <div class="row"><button class="btn" type="submit">Update Profile</button><button id="changePwd" class="btn outline" type="button">Change Password</button></div>
+  </form>
+</main>
+<script>
+(function(){
+  const session = JSON.parse(localStorage.getItem('arewa_session')||'null');
+  if(!session) location.href='login.html';
+  const users = JSON.parse(localStorage.getItem('arewa_users')||'[]');
+  const user = users.find(u=>u.email===session.email);
+  const area = document.getElementById('profileArea');
+  area.innerHTML = `<div class="profile-card"><div class="avatar">${user.fullname.charAt(0)}</div>
+  <div><strong>${user.fullname}</strong><p>${user.email}</p><p>${user.phone}</p><p>KYC: ${user.kyc.status}</p></div></div>`;
+  const form = document.getElementById('profileForm');
+  form.fullname.value = user.fullname; form.phone.value = user.phone; form.address.value = user.address||'';
+  form.style.display='block';
+  form.addEventListener('submit', (e)=>{ e.preventDefault();
+    user.fullname = form.fullname.value; user.phone = form.phone.value; user.address = form.address.value;
+    localStorage.setItem('arewa_users', JSON.stringify(users)); alert('Profile updated.'); location.reload();
+  });
+  document.getElementById('logoutLink').addEventListener('click', ()=>{ localStorage.removeItem('arewa_session'); location.href='index.html'; });
+})();
+</script>
+</body></html>
