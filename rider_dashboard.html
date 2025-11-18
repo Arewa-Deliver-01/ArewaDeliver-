@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Rider Dashboard</title><link rel="stylesheet" href="style.css" /></head><body>
+<header><h1 class="logo">ArewaDeliver</h1><nav><a href="index.html">Home</a><a href="profile.html">Profile</a><a href="wallet.html">Wallet</a><a href="logout.html" id="logoutLink">Logout</a></nav></header>
+<main class="dashboard">
+  <h2>Rider Dashboard</h2>
+  <div id="riderCard" class="profile-card"></div>
+  <section>
+    <h3>Available deliveries (demo)</h3>
+    <div id="jobs"></div>
+  </section>
+</main>
+<script>
+(function(){
+  const session = JSON.parse(localStorage.getItem('arewa_session')||'null');
+  if(!session || session.role!=='rider') location.href='login.html';
+  const users = JSON.parse(localStorage.getItem('arewa_users')||'[]');
+  const user = users.find(u=>u.email===session.email);
+  document.getElementById('riderCard').innerHTML = `<div class="avatar">${user.fullname.charAt(0)}</div>
+  <div><strong>${user.fullname}</strong><p>${user.rider_vehicle||'No vehicle set'}</p><p>${user.phone}</p><p>Wallet: ₦${user.wallet.balance}</p></div>`;
+  document.getElementById('logoutLink').addEventListener('click', ()=>{ localStorage.removeItem('arewa_session'); location.href='index.html'; });
+})();
+</script>
+</body></html>
