@@ -1,78 +1,44 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ArewaDeliver</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ArewaDeliver — Home</title>
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
+<header>
+  <h1 class="logo">ArewaDeliver</h1>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="request.html">Request</a>
+    <a href="track.html">Track</a>
+    <a href="login.html" class="btn small">Login / Register</a>
+  </nav>
+</header>
 
-  <!-- Header with Logo and Navigation -->
-  <header>
-    <h1 class="logo">ArewaDeliver</h1>
+<main class="hero">
+  <h2>Fast & Reliable Digital Delivery in Katsina</h2>
+  <p>Connect with vendors, riders and track deliveries — powered by ArewaDeliver.</p>
+  <div class="hero-actions">
+    <a href="register.html" class="btn">Create Account</a>
+    <a href="request.html" class="btn outline">Request Delivery</a>
+  </div>
+</main>
 
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="request.html">Request Delivery</a>
-      <a href="track.html">Track Delivery</a>
-    </nav>
-  </header>
+<section class="services">
+  <h3>Services</h3>
+  <div class="service-cards">
+    <div class="card"><h4>Local Delivery</h4><p>Same-day delivery across the state.</p></div>
+    <div class="card"><h4>Vendor Partnerships</h4><p>Restaurants, shops and merchants.</p></div>
+    <div class="card"><h4>Rider Network</h4><p>Fast rider pickups & delivery.</p></div>
+  </div>
+</section>
 
-  <!-- Main Hero Section -->
-  <section class="hero">
-    <h2>Fast & Reliable Digital Delivery</h2>
-    <p>Empowering Katsina State with modern digital delivery services.</p>
-    <a href="request.html" class="btn">Request a Delivery</a>
-  </section>
+<footer>
+  <p>© 2025 ArewaDeliver</p>
+</footer>
 
-  <!-- Services Section -->
-  <section class="services">
-    <h2>Our Services</h2>
-    <div class="service-cards">
-      <div class="card">
-        <h3>Local Delivery</h3>
-        <p>Fast and secure delivery within Katsina State.</p>
-      </div>
-      <div class="card">
-        <h3>Package Tracking</h3>
-        <p>Track your delivery in real-time using your ID.</p>
-      </div>
-      <div class="card">
-        <h3>Priority Delivery</h3>
-        <p>Need urgent delivery? We’ll handle it quickly.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Projects / Delivery Showcase Section -->
-  <section class="projects">
-    <h2>Recent Deliveries</h2>
-    <div class="project-cards">
-      <div class="project-card">
-        <p>Package #001 – Delivered to Katsina Central</p>
-      </div>
-      <div class="project-card">
-        <p>Package #002 – Delivered to Kafur</p>
-      </div>
-      <div class="project-card">
-        <p>Package #003 – Delivered to Funtua</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- AI Chatbot Section -->
-  <section class="chatbot">
-    <h2>Ask ArewaBot</h2>
-    <input type="text" id="chatInput" placeholder="Ask about your delivery..." />
-    <button id="chatSend" class="btn">Send</button>
-    <div id="chatOutput"></div>
-  </section>
-
-  <footer>
-    <p>© 2025 ArewaDeliver. All rights reserved.</p>
-  </footer>
-
-  <script src="app.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
