@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Vendor Dashboard</title><link rel="stylesheet" href="style.css" /></head><body>
+<header><h1 class="logo">ArewaDeliver</h1><nav><a href="index.html">Home</a><a href="profile.html">Profile</a><a href="wallet.html">Wallet</a><a href="logout.html" id="logoutLink">Logout</a></nav></header>
+<main class="dashboard">
+  <h2>Vendor Dashboard</h2>
+  <div id="vendorCard" class="profile-card"></div>
+  <section>
+    <h3>Orders (demo)</h3>
+    <div id="orders"></div>
+    <button id="collectFee" class="btn outline">Collect registration fee (demo)</button>
+  </section>
+</main>
+<script>
+(function(){
+  const session = JSON.parse(localStorage.getItem('arewa_session')||'null');
+  if(!session || session.role!=='vendor') location.href='login.html';
+  const users = JSON.parse(localStorage.getItem('arewa_users')||'[]');
+  const user = users.find(u=>u.email===session.email);
+  document.getElementById('vendorCard').innerHTML = `<div class="avatar">${user.fullname.charAt(0)}</div>
+  <div><strong>${user.vendor_business||user.fullname}</strong><p>${user.phone}</p><p>${user.email}</p><p>Wallet: ₦${user.wallet.balance}</p></div>`;
+  document.getElementById('collectFee').addEventListener('click', ()=>{
+    alert('This is a demo. To collect real fees integrate payment gateway (ArewaPay/Opay).');
+  });
+  document.getElementById('logoutLink').addEventListener('click', ()=>{ localStorage.removeItem('arewa_session'); location.href='index.html'; });
+})();
+</script>
+</body></html>
