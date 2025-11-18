@@ -1,33 +1,49 @@
-<!doctype html>
-<html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Profile - ArewaDeliver</title><link rel="stylesheet" href="style.css" /></head><body>
-<header><h1 class="logo">ArewaDeliver</h1><nav><a href="index.html">Home</a><a href="profile.html">Profile</a><a href="wallet.html">Wallet</a><a href="logout.html" id="logoutLink">Logout</a></nav></header>
-<main class="form-wrap">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile - ArewaDeliver</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+<style>
+  body{background:#f8f8f8;margin:0;font-family:Arial;}
+  header{background:#222;color:white;padding:15px;display:flex;justify-content:space-between;align-items:center;}
+  header .logo{color:#c59d45;font-size:22px;font-weight:bold;}
+  nav a{color:white;margin-left:15px;text-decoration:none;font-weight:500;}
+  nav a:hover{color:#c59d45;}
+
+  .profile-box{
+    background:white;width:90%;max-width:400px;margin:30px auto;padding:20px;
+    border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,0.1);
+    border-top:5px solid #c59d45;text-align:center;
+  }
+  .avatar{
+    width:80px;height:80px;border-radius:50%;background:#c59d45;
+    color:white;display:flex;align-items:center;justify-content:center;
+    font-size:30px;margin:auto;margin-bottom:10px;
+  }
+</style>
+
+</head>
+<body>
+
+<header>
+  <div class="logo">ArewaDeliver</div>
+  <nav>
+    <a href="customer_dashboard.html">Dashboard</a>
+    <a href="wallet.html">Wallet</a>
+    <a href="profile.html">Profile</a>
+    <a href="logout.html">Logout</a>
+  </nav>
+</header>
+
+<div class="profile-box">
+  <div class="avatar">A</div>
   <h2>Your Profile</h2>
-  <div id="profileArea"></div>
-  <form id="profileForm" style="display:none">
-    <input name="fullname" placeholder="Full name" />
-    <input name="phone" placeholder="Phone" />
-    <input name="address" placeholder="Address" />
-    <div class="row"><button class="btn" type="submit">Update Profile</button><button id="changePwd" class="btn outline" type="button">Change Password</button></div>
-  </form>
-</main>
-<script>
-(function(){
-  const session = JSON.parse(localStorage.getItem('arewa_session')||'null');
-  if(!session) location.href='login.html';
-  const users = JSON.parse(localStorage.getItem('arewa_users')||'[]');
-  const user = users.find(u=>u.email===session.email);
-  const area = document.getElementById('profileArea');
-  area.innerHTML = `<div class="profile-card"><div class="avatar">${user.fullname.charAt(0)}</div>
-  <div><strong>${user.fullname}</strong><p>${user.email}</p><p>${user.phone}</p><p>KYC: ${user.kyc.status}</p></div></div>`;
-  const form = document.getElementById('profileForm');
-  form.fullname.value = user.fullname; form.phone.value = user.phone; form.address.value = user.address||'';
-  form.style.display='block';
-  form.addEventListener('submit', (e)=>{ e.preventDefault();
-    user.fullname = form.fullname.value; user.phone = form.phone.value; user.address = form.address.value;
-    localStorage.setItem('arewa_users', JSON.stringify(users)); alert('Profile updated.'); location.reload();
-  });
-  document.getElementById('logoutLink').addEventListener('click', ()=>{ localStorage.removeItem('arewa_session'); location.href='index.html'; });
-})();
-</script>
-</body></html>
+  <p>Update your account details soon.</p>
+</div>
+
+</body>
+</html>
