@@ -1,24 +1,27 @@
-const chatSend = document.getElementById("chatSend");
-const chatInput = document.getElementById("chatInput");
-const chatOutput = document.getElementById("chatOutput");
+// Frontend client for unified auth system (Option 2)
+// Replace with your Render backend URL after deploying backend:
+const API_BASE = "REPLACE_WITH_RENDER_URL";
 
-chatSend.addEventListener("click", async () => {
-  const userMessage = chatInput.value.trim();
-  if(!userMessage) return;
+// Simple helper: get session
+function getSession(){ return JSON.parse(localStorage.getItem('arewa_session')||'null'); }
+function requireSession(roles){ const s=getSession(); if(!s) return null; if(roles && !roles.includes(s.role)) return null; return s; }
 
-  const response = await fetch("/api/ask", {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({ message: userMessage })
-  });
+// If pages need to redirect by role, they already do in their inline scripts.
+// This file also defines common helpers for future enhancements.
 
-  const data = await response.json();
-  const botReply = data.reply || "Sorry, I could not get a response.";
+// Example function to call backend (if needed)
+async function callApi(path, data){
+  try{
+    const res = await fetch((API_BASE? API_BASE:'') + path, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(data||{})
+    });
+    return await res.json();
+  }catch(e){
+    console.error('API call failed', e);
+    throw e;
+  }
+}
 
-  const messageElement = document.createElement("p");
-  messageElement.innerHTML = `<strong>You:</strong> ${userMessage}<br><strong>ArewaBot:</strong> ${botReply}`;
-  chatOutput.appendChild(messageElement);
-
-  chatInput.value = "";
-  chatOutput.scrollTop = chatOutput.scrollHeight;
-});
+// You can expand auth functions here to call real backend authentication.
