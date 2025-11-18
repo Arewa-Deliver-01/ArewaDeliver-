@@ -1,27 +1,73 @@
-<!doctype html>
-<html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Vendor Dashboard</title><link rel="stylesheet" href="style.css" /></head><body>
-<header><h1 class="logo">ArewaDeliver</h1><nav><a href="index.html">Home</a><a href="profile.html">Profile</a><a href="wallet.html">Wallet</a><a href="logout.html" id="logoutLink">Logout</a></nav></header>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vendor Dashboard - ArewaDeliver</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+<style>
+  body{background:#f8f8f8;margin:0;font-family:Arial;}
+  header{background:#222;color:white;padding:15px;display:flex;justify-content:space-between;align-items:center;}
+  header .logo{font-size:22px;font-weight:bold;color:#c59d45;}
+  nav a{color:white;margin-left:15px;text-decoration:none;font-weight:500;}
+  nav a:hover{color:#c59d45;}
+
+  .dashboard{padding:20px;}
+  .card-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:15px;margin-top:20px;
+  }
+  .dash-card{
+    background:white;padding:20px;border-radius:12px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.1);
+    text-align:center;border-top:5px solid #c59d45;
+  }
+  .dash-card i{font-size:30px;color:#c59d45;margin-bottom:10px;}
+  .dash-card:hover{transform:scale(1.02);transition:.2s;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">ArewaDeliver</div>
+  <nav>
+    <a href="vendor_dashboard.html">Dashboard</a>
+    <a href="wallet.html">Wallet</a>
+    <a href="profile.html">Profile</a>
+    <a href="logout.html">Logout</a>
+  </nav>
+</header>
+
 <main class="dashboard">
-  <h2>Vendor Dashboard</h2>
-  <div id="vendorCard" class="profile-card"></div>
-  <section>
-    <h3>Orders (demo)</h3>
-    <div id="orders"></div>
-    <button id="collectFee" class="btn outline">Collect registration fee (demo)</button>
-  </section>
+  <h2>Welcome, Vendor</h2>
+
+  <div class="card-grid">
+
+    <a class="dash-card">
+      <i class="fa-solid fa-box"></i>
+      <h3>New Orders</h3>
+    </a>
+
+    <a class="dash-card">
+      <i class="fa-solid fa-check"></i>
+      <h3>Completed Orders</h3>
+    </a>
+
+    <a href="wallet.html" class="dash-card">
+      <i class="fa-solid fa-wallet"></i>
+      <h3>Wallet</h3>
+    </a>
+
+    <a href="profile.html" class="dash-card">
+      <i class="fa-solid fa-store"></i>
+      <h3>Your Store</h3>
+    </a>
+
+  </div>
+
 </main>
-<script>
-(function(){
-  const session = JSON.parse(localStorage.getItem('arewa_session')||'null');
-  if(!session || session.role!=='vendor') location.href='login.html';
-  const users = JSON.parse(localStorage.getItem('arewa_users')||'[]');
-  const user = users.find(u=>u.email===session.email);
-  document.getElementById('vendorCard').innerHTML = `<div class="avatar">${user.fullname.charAt(0)}</div>
-  <div><strong>${user.vendor_business||user.fullname}</strong><p>${user.phone}</p><p>${user.email}</p><p>Wallet: ₦${user.wallet.balance}</p></div>`;
-  document.getElementById('collectFee').addEventListener('click', ()=>{
-    alert('This is a demo. To collect real fees integrate payment gateway (ArewaPay/Opay).');
-  });
-  document.getElementById('logoutLink').addEventListener('click', ()=>{ localStorage.removeItem('arewa_session'); location.href='index.html'; });
-})();
-</script>
-</body></html>
+
+</body>
+</html>
