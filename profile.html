@@ -1,34 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Profile - ArewaDeliver</title>
-<link rel="stylesheet" href="style.css">
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Profile — ArewaDeliver</title>
+<link rel="stylesheet" href="style.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-
 <style>
-  body{background:#f8f8f8;margin:0;font-family:Arial;}
-  header{background:#222;color:white;padding:15px;display:flex;justify-content:space-between;align-items:center;}
-  header .logo{color:#c59d45;font-size:22px;font-weight:bold;}
-  nav a{color:white;margin-left:15px;text-decoration:none;font-weight:500;}
-  nav a:hover{color:#c59d45;}
-
-  .profile-box{
-    background:white;width:90%;max-width:400px;margin:30px auto;padding:20px;
-    border-radius:12px;box-shadow:0 2px 6px rgba(0,0,0,0.1);
-    border-top:5px solid #c59d45;text-align:center;
-  }
-  .avatar{
-    width:80px;height:80px;border-radius:50%;background:#c59d45;
-    color:white;display:flex;align-items:center;justify-content:center;
-    font-size:30px;margin:auto;margin-bottom:10px;
-  }
+  header{background:#222;color:#fff;padding:14px;display:flex;justify-content:space-between;align-items:center}
+  .logo{color:#c59d45;font-weight:700}
+  nav a{color:#fff;margin-left:12px;text-decoration:none}
+  .profile-wrap{max-width:720px;margin:26px auto;background:#fff;padding:20px;border-radius:12px;box-shadow:0 8px 26px rgba(0,0,0,0.06)}
+  .avatar{width:96px;height:96px;border-radius:14px;background:#c59d45;color:#fff;display:flex;align-items:center;justify-content:center;font-size:34px;margin:0 auto 12px}
 </style>
-
 </head>
 <body>
-
 <header>
   <div class="logo">ArewaDeliver</div>
   <nav>
@@ -39,11 +24,45 @@
   </nav>
 </header>
 
-<div class="profile-box">
-  <div class="avatar">A</div>
-  <h2>Your Profile</h2>
-  <p>Update your account details soon.</p>
-</div>
+<main>
+  <div class="profile-wrap">
+    <div class="avatar">A</div>
+    <h2 style="text-align:center">Your Profile</h2>
+    <p style="text-align:center;color:#666">Manage your KYC, payment methods and contact details from here.</p>
+    <div style="margin-top:18px">
+      <label>Full name</label>
+      <input id="fullname" />
+      <label>Phone</label>
+      <input id="phone" />
+      <label>Email</label>
+      <input id="email" />
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <button class="btn" id="saveProfile">Save</button>
+        <a class="btn outline" href="kyc.html">KYC</a>
+      </div>
+    </div>
+  </div>
+</main>
 
+<script src="app.js"></script>
+<script>
+  // load user session if any
+  (function(){
+    const s = JSON.parse(localStorage.getItem('arewa_session')||'null');
+    if(!s) return;
+    document.getElementById('fullname').value = s.name || '';
+    document.getElementById('phone').value = s.phone || '';
+    document.getElementById('email').value = s.email || '';
+  })();
+
+  document.getElementById('saveProfile').addEventListener('click', ()=>{
+    const s = JSON.parse(localStorage.getItem('arewa_session')||'null') || {};
+    s.name = document.getElementById('fullname').value;
+    s.phone = document.getElementById('phone').value;
+    s.email = document.getElementById('email').value;
+    localStorage.setItem('arewa_session', JSON.stringify(s));
+    alert('Profile saved (demo).');
+  });
+</script>
 </body>
 </html>
