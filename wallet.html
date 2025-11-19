@@ -1,25 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wallet</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Wallet - ArewaDeliver</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header>
-    <h1>Your Wallet</h1>
-    <nav>
-      <a href="customer_dashboard.html">Dashboard</a>
-      <a href="profile.html">Profile</a>
-      <a href="logout.html">Logout</a>
-    </nav>
-  </header>
+<header>
+  <h1 class="logo">ArewaDeliver</h1>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="profile.html">Profile</a>
+    <a href="wallet.html">Wallet</a>
+    <a href="logout.html" id="logoutLink">Logout</a>
+  </nav>
+</header>
 
-  <section class="wallet">
-    <h2>Balance: ₦0.00</h2>
-    <a class="btn" href="#">Add Funds</a>
-    <a class="btn" href="#">Withdraw</a>
+<main class="dashboard">
+  <h2>Your Wallet</h2>
+  <div id="walletCard" class="profile-card"></div>
+
+  <section>
+    <h3>Transactions</h3>
+    <div id="txList"></div>
+    <div class="row">
+      <button id="withdraw" class="btn">Withdraw</button>
+      <button id="topup" class="btn outline">Top up</button>
+    </div>
   </section>
+</main>
+
+<script>
+(async function(){
+  // Get logged-in user from session
+  const session = JSON.parse(localStorage.getItem('arewa_session') || 'null');
+  if(!session) location.href='login.html';
+  const user_id = session.user_id;
+
+  // Fetch wallet info from backend
+  async function loadWallet() {
+    const res = await fetch(`/get_wallet/${user_id}`);
+    const data = await res.json();
+    const balance = data.balance;
+    const transactions = data.transactions;
+
+    // Wallet card
+    document.getElementById('walletCard').innerHTML = `
+      <div class="avatar">${session.name.charAt(0)}</div>
+      <div>
+        <strong>Balance</strong>
+        <p>₦${balance}</p>
+      </div>
+    `;
+
+    // Transactions list with breakdown
+    const txList = document.getElementById('txList');
+    txList.innerHTML = transactions.length 
+      ? transactions.map(t => {
+          let details = `${t.date}: ${t.type.toUpperCase()} ₦${t.amount}`;
+          if(t.category.includes("commission") || t.category.includes("notification")) {
+              details += ` (${t.category})`;
+          }
+          return `<div class="tx">${details}</div>`;
+      }).join('')
+      : '<p class="muted">No transactions yet</p>';
+  }
+
+  await loadWallet();
+
+  // Top-up (demo)
+  document.getElementById('topup').addEventListener('click', async ()=>{
+    const amount = 1000; // demo top-up
+    const res = await fetch('/wallet_transaction', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({user_id, amount, type: 'credit'})
+    });
+    const data = await res.json();
+    if(data.status === 'success') loadWallet();
+    else alert(data.message);
+  });
+
+  // Withdraw button
+  document.getElementById('withdraw').addEventListener('click', ()=>{
+    alert('Withdraw feature requires integration with ArewaPay/OPay.');
+  });
+
+  // Logout
+  document.getElementById('logoutLink').addEventListener('click', ()=>{
+    localStorage.removeItem('arewa_session');
+    location.href='index.html';
+  });
+})();
+</script>
+
 </body>
 </html>
