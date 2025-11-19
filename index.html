@@ -1,120 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ArewaDeliver</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ArewaDeliver — Home</title>
   <link rel="stylesheet" href="style.css" />
-
-  <!-- Icons (from Feather Icons CDN) -->
   <script src="https://unpkg.com/feather-icons"></script>
-
   <style>
-    /* Onboarding Fade Animation */
-    .fade-in {
-      opacity: 0;
-      animation: fadeIn 1.2s forwards;
-    }
-    @keyframes fadeIn {
-      to { opacity: 1; }
-    }
-
-    /* Slide-up animation */
-    .slide-up {
-      opacity: 0;
-      transform: translateY(20px);
-      animation: slideUp 1s forwards;
-    }
-    @keyframes slideUp {
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Icon Box */
-    .role-box {
-      padding: 20px;
-      border-radius: 12px;
-      background: #fff;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-      text-align: center;
-      transition: 0.3s;
-      cursor: pointer;
-    }
-    .role-box:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-    }
-    .role-box i {
-      width: 40px;
-      height: 40px;
-      margin-bottom: 10px;
-      color: #1b7b34;
-    }
-
-    .roles-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 20px;
-      margin-top: 30px;
-    }
-
+    /* small homepage-specific styles/animations */
+    .hero { padding:48px 16px; text-align:center; background:linear-gradient(180deg,#fff8ec,#fff); }
+    .roles { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:16px; max-width:980px; margin:28px auto; }
+    .role-card { background:#fff; padding:18px; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,0.06);
+                 transition:transform .22s, box-shadow .22s; text-decoration:none; color:inherit; display:flex;flex-direction:column; align-items:center; gap:8px; }
+    .role-card:hover{ transform:translateY(-6px); box-shadow:0 12px 30px rgba(0,0,0,0.10); }
+    .role-icon{ width:56px;height:56px;border-radius:12px; display:flex;align-items:center;justify-content:center;background: #c59d45; color:#fff; font-size:22px;}
+    .role-title{ font-weight:700; color:#222; }
+    .sub { color:#666; font-size:14px; }
+    .hero-actions { margin-top:12px; display:flex;gap:8px; justify-content:center; flex-wrap:wrap; }
   </style>
 </head>
-
 <body>
+  <header>
+    <h1 class="logo">ArewaDeliver</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="login.html">Login</a>
+      <a href="register.html">Register</a>
+    </nav>
+  </header>
 
-<header>
-  <h1 class="logo fade-in">ArewaDeliver</h1>
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="login.html">Login</a>
-    <a href="wallet.html">Wallet</a>
-  </nav>
-</header>
+  <main class="hero">
+    <h2>Fast & Reliable Digital Delivery in Katsina</h2>
+    <p class="sub">Order food, groceries and parcels — connect with trusted local riders and vendors.</p>
 
-<!-- HERO SECTION -->
-<main class="hero fade-in" style="animation-delay: 0.3s;">
-  <h2>Fast & Reliable Digital Delivery in Katsina</h2>
-  <p>Order. Deliver. Track. Powered by a modern wallet system.</p>
+    <div class="hero-actions">
+      <a class="btn" href="register.html">Create Account</a>
+      <a class="btn outline" href="request.html">Request Delivery</a>
+    </div>
 
-  <div class="hero-actions slide-up" style="animation-delay: 0.6s;">
-    <a href="register.html" class="btn">Create Account</a>
-    <a href="request.html" class="btn outline">Request Delivery</a>
-  </div>
-</main>
+    <div class="roles" aria-label="choose role">
+      <a class="role-card" href="register.html" title="Register as Customer">
+        <div class="role-icon"><i data-feather="user"></i></div>
+        <div class="role-title">Customer</div>
+        <div class="sub">Order & track deliveries</div>
+      </a>
 
-<!-- USER ROLES SECTION -->
-<section class="slide-up" style="animation-delay: 1s; padding: 30px;">
-  <h2 style="text-align:center; margin-bottom:20px;">Choose Your Role</h2>
+      <a class="role-card" href="register.html" title="Register as Vendor">
+        <div class="role-icon"><i data-feather="shopping-bag"></i></div>
+        <div class="role-title">Vendor</div>
+        <div class="sub">Sell & get orders</div>
+      </a>
 
-  <div class="roles-grid">
+      <a class="role-card" href="register.html" title="Register as Rider">
+        <div class="role-icon"><i data-feather="truck"></i></div>
+        <div class="role-title">Rider</div>
+        <div class="sub">Deliver & earn</div>
+      </a>
+    </div>
+  </main>
 
-    <!-- Customer -->
-    <a href="register_customer.html" class="role-box">
-      <i data-feather="user"></i>
-      <h3>Customer</h3>
-      <p>Order food, groceries or send packages.</p>
-    </a>
+  <footer style="text-align:center;padding:18px 8px;">
+    <small>© 2025 ArewaDeliver — Powered for Katsina</small>
+  </footer>
 
-    <!-- Vendor -->
-    <a href="register_vendor.html" class="role-box">
-      <i data-feather="shopping-bag"></i>
-      <h3>Vendor</h3>
-      <p>Sell your products and receive payments instantly.</p>
-    </a>
-
-    <!-- Rider -->
-    <a href="register_rider.html" class="role-box">
-      <i data-feather="truck"></i>
-      <h3>Rider</h3>
-      <p>Deliver packages and earn instantly.</p>
-    </a>
-
-  </div>
-</section>
-
-<script>
-  feather.replace(); // load icons
-</script>
-
+<script>feather.replace()</script>
 </body>
 </html>
