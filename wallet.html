@@ -1,12 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Wallet - ArewaDeliver</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wallet - ArewaDeliver</title>
+<link rel="stylesheet" href="style.css">
+<style>
+/* Wallet Page Specific */
+.wallet-container {
+    max-width: 480px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+}
+
+.wallet-card {
+    background: linear-gradient(135deg, #00b894, #008f72);
+    padding: 25px;
+    border-radius: 20px;
+    color: white;
+    text-align: center;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    transition: transform 0.3s ease;
+}
+
+.wallet-card:hover {
+    transform: translateY(-5px);
+}
+
+.wallet-card h2 {
+    font-size: 2.2rem;
+    margin: 0;
+}
+
+.wallet-card p {
+    opacity: 0.85;
+    margin-top: 8px;
+}
+
+.wallet-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.action-btn {
+    flex: 1;
+    margin: 0 5px;
+    padding: 12px 0;
+    border-radius: 50px;
+    border: none;
+    background: #00b894;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.action-btn.outline {
+    background: white;
+    color: #00b894;
+    border: 2px solid #00b894;
+}
+
+.action-btn:hover {
+    transform: scale(1.05);
+}
+
+.transaction-history {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.transaction-history h3 {
+    margin-bottom: 10px;
+}
+
+.txn {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px;
+    background: #f7f7f7;
+    border-radius: 12px;
+    margin-bottom: 8px;
+}
+
+.txn .amt.debit {
+    color: #d63031;
+}
+
+.txn .amt.credit {
+    color: #00b894;
+}
+
+.muted {
+    opacity: 0.6;
+}
+</style>
 </head>
 <body>
+
 <header>
   <h1 class="logo">ArewaDeliver</h1>
   <nav>
@@ -17,81 +113,65 @@
   </nav>
 </header>
 
-<main class="dashboard">
-  <h2>Your Wallet</h2>
-  <div id="walletCard" class="profile-card"></div>
-
-  <section>
-    <h3>Transactions</h3>
-    <div id="txList"></div>
-    <div class="row">
-      <button id="withdraw" class="btn">Withdraw</button>
-      <button id="topup" class="btn outline">Top up</button>
+<main class="wallet-container">
+    <div class="wallet-card" id="walletCard">
+        <!-- Dynamic balance -->
     </div>
-  </section>
+
+    <div class="wallet-actions">
+        <button class="action-btn" id="topup">Top Up</button>
+        <button class="action-btn" id="withdraw">Withdraw</button>
+        <button class="action-btn outline" id="transfer">Transfer</button>
+    </div>
+
+    <div class="transaction-history">
+        <h3>Recent Transactions</h3>
+        <div id="txList"></div>
+    </div>
 </main>
 
 <script>
-(async function(){
-  // Get logged-in user from session
-  const session = JSON.parse(localStorage.getItem('arewa_session') || 'null');
-  if(!session) location.href='login.html';
-  const user_id = session.user_id;
+(function(){
+    const session = JSON.parse(localStorage.getItem('arewa_session')||'null');
+    if(!session) location.href='login.html';
 
-  // Fetch wallet info from backend
-  async function loadWallet() {
-    const res = await fetch(`/get_wallet/${user_id}`);
-    const data = await res.json();
-    const balance = data.balance;
-    const transactions = data.transactions;
+    const users = JSON.parse(localStorage.getItem('arewa_users')||'[]');
+    const user = users.find(u=>u.email===session.email);
 
-    // Wallet card
-    document.getElementById('walletCard').innerHTML = `
-      <div class="avatar">${session.name.charAt(0)}</div>
-      <div>
-        <strong>Balance</strong>
-        <p>₦${balance}</p>
-      </div>
-    `;
-
-    // Transactions list with breakdown
+    const walletCard = document.getElementById('walletCard');
     const txList = document.getElementById('txList');
-    txList.innerHTML = transactions.length 
-      ? transactions.map(t => {
-          let details = `${t.date}: ${t.type.toUpperCase()} ₦${t.amount}`;
-          if(t.category.includes("commission") || t.category.includes("notification")) {
-              details += ` (${t.category})`;
-          }
-          return `<div class="tx">${details}</div>`;
-      }).join('')
-      : '<p class="muted">No transactions yet</p>';
-  }
 
-  await loadWallet();
+    function renderWallet() {
+        walletCard.innerHTML = `<h2>₦${user.wallet.balance}</h2><p>Available Balance</p>`;
+        const tx = user.wallet.transactions || [];
+        txList.innerHTML = tx.length
+            ? tx.map(t=>`<div class="txn"><span>${t.desc}</span><span class="amt ${t.type}">${t.amount}</span></div>`).join('')
+            : '<p class="muted">No transactions yet</p>';
+    }
 
-  // Top-up (demo)
-  document.getElementById('topup').addEventListener('click', async ()=>{
-    const amount = 1000; // demo top-up
-    const res = await fetch('/wallet_transaction', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({user_id, amount, type: 'credit'})
+    renderWallet();
+
+    document.getElementById('topup').addEventListener('click', ()=>{
+        const amount = 1000;
+        user.wallet.balance += amount;
+        user.wallet.transactions.push({desc:'Top-up', amount: `+₦${amount}`, type:'credit'});
+        localStorage.setItem('arewa_users', JSON.stringify(users));
+        renderWallet();
+        alert(`Top-up successful: ₦${user.wallet.balance}`);
     });
-    const data = await res.json();
-    if(data.status === 'success') loadWallet();
-    else alert(data.message);
-  });
 
-  // Withdraw button
-  document.getElementById('withdraw').addEventListener('click', ()=>{
-    alert('Withdraw feature requires integration with ArewaPay/OPay.');
-  });
+    document.getElementById('withdraw').addEventListener('click', ()=>{
+        alert('Withdraw feature requires integration with ArewaPay/OPay.');
+    });
 
-  // Logout
-  document.getElementById('logoutLink').addEventListener('click', ()=>{
-    localStorage.removeItem('arewa_session');
-    location.href='index.html';
-  });
+    document.getElementById('transfer').addEventListener('click', ()=>{
+        alert('Transfer feature coming soon!');
+    });
+
+    document.getElementById('logoutLink').addEventListener('click', ()=>{
+        localStorage.removeItem('arewa_session');
+        location.href='index.html';
+    });
 })();
 </script>
 
