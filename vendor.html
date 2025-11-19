@@ -1,18 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vendor Panel</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Registration - ArewaDeliver</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>Vendor Panel</h1>
-    <nav>
-      <a href="vendor_dashboard.html">Dashboard</a>
-      <a href="logout.html">Logout</a>
-    </nav>
-  </header>
+
+<div class="container">
+    <h2>Vendor Registration</h2>
+    <p class="info">Registration Fee: ₦2,000</p>
+
+    <form id="vendorForm">
+        <input type="text" id="name" placeholder="Business Name" required>
+        <input type="text" id="phone" placeholder="Phone Number" required>
+        <input type="email" id="email" placeholder="Business Email">
+        <input type="text" id="address" placeholder="Business Address">
+
+        <button type="submit">Register Vendor</button>
+    </form>
+
+    <p id="response"></p>
+</div>
+
+<script src="app.js"></script>
+<script>
+document.getElementById("vendorForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    saveProfile("vendor");
+});
+</script>
+
 </body>
 </html>
