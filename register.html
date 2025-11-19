@@ -1,66 +1,86 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Register - ArewaDeliver</title><link rel="stylesheet" href="style.css" /></head>
+<head>
+  <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Register — ArewaDeliver</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .form-wrap{max-width:720px;margin:28px auto;background:#fff;padding:22px;border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.06)}
+    label{display:block;font-weight:600;margin-top:12px}
+    .hint{font-size:13px;color:#666;margin-top:8px}
+  </style>
+</head>
 <body>
-<header><h1 class="logo">ArewaDeliver</h1></header>
-<main class="form-wrap">
-  <h2>Create an account</h2>
-  <form id="regForm">
-    <input name="fullname" placeholder="Full name" required />
-    <input name="email" type="email" placeholder="Email" required />
-    <input name="phone" placeholder="Phone number" required />
-    <input name="password" type="password" placeholder="Password" required />
-    <label>Account type</label>
-    <select name="role" required>
-      <option value="customer">Customer</option>
-      <option value="vendor">Vendor</option>
-      <option value="rider">Rider</option>
-    </select>
-    <div id="vendorFields" style="display:none">
-      <input name="vendor_business" placeholder="Business name (for vendors)" />
-      <input name="vendor_reg" placeholder="Registration ID (optional)" />
-    </div>
-    <div id="riderFields" style="display:none">
-      <input name="rider_vehicle" placeholder="Vehicle type (e.g. motorcycle)" />
-      <input name="rider_idno" placeholder="National ID number (for KYC)" />
-    </div>
-    <div class="row">
-      <button class="btn" type="submit">Register</button>
-      <a href="login.html" class="btn outline">Login</a>
-    </div>
-    <p class="muted">Registration fees may apply for vendor/rider onboarding. (Demo mode stores users locally.)</p>
-  </form>
+<header>
+  <h1 class="logo">ArewaDeliver</h1>
+  <nav><a href="index.html">Home</a><a href="login.html">Login</a></nav>
+</header>
+
+<main class="container">
+  <div class="form-wrap">
+    <h2>Create an account</h2>
+    <p class="hint">Choose a role — vendors and riders may require verification and onboarding fee.</p>
+
+    <form id="regForm">
+      <label>Full name</label>
+      <input name="fullname" required />
+
+      <label>Email</label>
+      <input name="email" type="email" required />
+
+      <label>Phone</label>
+      <input name="phone" required />
+
+      <label>Password</label>
+      <input name="password" type="password" required />
+
+      <label>Account type</label>
+      <select name="role" required>
+        <option value="customer">Customer</option>
+        <option value="vendor">Vendor</option>
+        <option value="rider">Rider</option>
+      </select>
+
+      <div id="vendorBlock" style="display:none">
+        <label>Business name (vendors)</label>
+        <input name="vendor_business" />
+        <label>Registration ID (optional)</label>
+        <input name="vendor_reg" />
+      </div>
+
+      <div id="riderBlock" style="display:none">
+        <label>Vehicle type (rider)</label>
+        <input name="rider_vehicle" />
+        <label>National ID (for KYC)</label>
+        <input name="rider_idno" />
+      </div>
+
+      <div style="margin-top:16px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" type="submit">Register</button>
+        <a class="btn outline" href="login.html">Already have account</a>
+      </div>
+
+      <p class="muted" style="margin-top:12px">Demo mode stores users locally. Production requires backend & payment integration for onboarding fees.</p>
+    </form>
+  </div>
 </main>
+
+<script src="app.js"></script>
 <script>
-const regForm = document.getElementById('regForm');
-const roleSelect = regForm.role;
-const vendorFields = document.getElementById('vendorFields');
-const riderFields = document.getElementById('riderFields');
-roleSelect.addEventListener('change', ()=> {
-  vendorFields.style.display = roleSelect.value==='vendor'? 'block':'none';
-  riderFields.style.display = roleSelect.value==='rider'? 'block':'none';
-});
-regForm.addEventListener('submit', (e)=>{ e.preventDefault();
-  const user = {
-    fullname: regForm.fullname.value,
-    email: regForm.email.value.trim().toLowerCase(),
-    phone: regForm.phone.value,
-    password: regForm.password.value,
-    role: regForm.role.value,
-    vendor_business: regForm.vendor_business?.value || '',
-    rider_vehicle: regForm.rider_vehicle?.value || '',
-    wallet: {balance:0, transactions:[]},
-    kyc: {status:'pending'}
-  };
-  const users = JSON.parse(localStorage.getItem('arewa_users')||'[]');
-  if(users.find(u=>u.email===user.email)){ alert('Email already registered.'); return; }
-  users.push(user);
-  localStorage.setItem('arewa_users', JSON.stringify(users));
-  localStorage.setItem('arewa_session', JSON.stringify({email:user.email, role:user.role}));
-  if(user.role==='customer') location.href='customer_dashboard.html';
-  else if(user.role==='vendor') location.href='vendor_dashboard.html';
-  else location.href='rider_dashboard.html';
-});
+  const reg = document.getElementById('regForm');
+  const role = reg.role;
+  const vendorBlock = document.getElementById('vendorBlock');
+  const riderBlock = document.getElementById('riderBlock');
+  role.addEventListener('change', ()=> {
+    vendorBlock.style.display = role.value==='vendor' ? 'block' : 'none';
+    riderBlock.style.display = role.value==='rider' ? 'block' : 'none';
+  });
+
+  reg.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    // app.js exposes registerUser function
+    registerUser(new FormData(reg));
+  });
 </script>
 </body>
 </html>
