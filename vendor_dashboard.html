@@ -1,73 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vendor Dashboard - ArewaDeliver</title>
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-
-<style>
-  body{background:#f8f8f8;margin:0;font-family:Arial;}
-  header{background:#222;color:white;padding:15px;display:flex;justify-content:space-between;align-items:center;}
-  header .logo{font-size:22px;font-weight:bold;color:#c59d45;}
-  nav a{color:white;margin-left:15px;text-decoration:none;font-weight:500;}
-  nav a:hover{color:#c59d45;}
-
-  .dashboard{padding:20px;}
-  .card-grid{
-    display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-    gap:15px;margin-top:20px;
-  }
-  .dash-card{
-    background:white;padding:20px;border-radius:12px;
-    box-shadow:0 2px 6px rgba(0,0,0,0.1);
-    text-align:center;border-top:5px solid #c59d45;
-  }
-  .dash-card i{font-size:30px;color:#c59d45;margin-bottom:10px;}
-  .dash-card:hover{transform:scale(1.02);transition:.2s;}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vendor Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <header><h1>Vendor Dashboard</h1></header>
 
-<header>
-  <div class="logo">ArewaDeliver</div>
-  <nav>
-    <a href="vendor_dashboard.html">Dashboard</a>
-    <a href="wallet.html">Wallet</a>
-    <a href="profile.html">Profile</a>
-    <a href="logout.html">Logout</a>
-  </nav>
-</header>
-
-<main class="dashboard">
-  <h2>Welcome, Vendor</h2>
-
-  <div class="card-grid">
-
-    <a class="dash-card">
-      <i class="fa-solid fa-box"></i>
-      <h3>New Orders</h3>
-    </a>
-
-    <a class="dash-card">
-      <i class="fa-solid fa-check"></i>
-      <h3>Completed Orders</h3>
-    </a>
-
-    <a href="wallet.html" class="dash-card">
-      <i class="fa-solid fa-wallet"></i>
-      <h3>Wallet</h3>
-    </a>
-
-    <a href="profile.html" class="dash-card">
-      <i class="fa-solid fa-store"></i>
-      <h3>Your Store</h3>
-    </a>
-
-  </div>
-
-</main>
-
+  <section class="dashboard">
+    <p>No vendor data yet.</p>
+  </section>
 </body>
 </html>
