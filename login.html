@@ -1,24 +1,33 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
+<head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Login - ArewaDeliver</title><link rel="stylesheet" href="style.css" /></head>
 <body>
-  <header><h1>Login to Continue</h1></header>
-
-  <section class="form-section">
-    <form>
-      <label>Email</label>
-      <input type="email" />
-
-      <label>Password</label>
-      <input type="password" />
-
-      <button class="btn">Login</button>
-    </form>
-  </section>
+<header><h1 class="logo">ArewaDeliver</h1></header>
+<main class="form-wrap">
+  <h2>Login to your account</h2>
+  <form id="loginForm">
+    <input name="email" type="email" placeholder="Email" required />
+    <input name="password" type="password" placeholder="Password" required />
+    <div class="row">
+      <button class="btn" type="submit">Login</button>
+      <a href="register.html" class="btn outline">Create account</a>
+    </div>
+    <p class="muted">Demo login: any email, password. Choose role on registration.</p>
+  </form>
+</main>
+<script>
+const loginForm = document.getElementById('loginForm');
+loginForm.addEventListener('submit', (e)=>{ e.preventDefault();
+  const email = loginForm.email.value.trim().toLowerCase();
+  const pwd = loginForm.password.value;
+  const users = JSON.parse(localStorage.getItem('arewa_users')||'[]') || [];
+  const user = users.find(u=>u.email===email && u.password===pwd);
+  if(!user){ alert('User not found — please register or use correct credentials.'); return; }
+  localStorage.setItem('arewa_session', JSON.stringify({email:user.email, role:user.role}));
+  if(user.role==='customer') location.href='customer_dashboard.html';
+  else if(user.role==='vendor') location.href='vendor_dashboard.html';
+  else if(user.role==='rider') location.href='rider_dashboard.html';
+});
+</script>
 </body>
 </html>
