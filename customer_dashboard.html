@@ -1,111 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Customer Dashboard - ArewaDeliver</title>
-<link rel="stylesheet" href="style.css">
-
-<!-- ICONS -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-
-<style>
-  body { background:#f8f8f8; margin:0; font-family:Arial; }
-  header {
-    background:#222;
-    color:white;
-    padding:15px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-  }
-  header .logo { font-size:22px; font-weight:bold; color:#c59d45; }
-  nav a {
-    color:white;
-    margin-left:15px;
-    text-decoration:none;
-    font-weight:500;
-  }
-  nav a:hover { color:#c59d45; }
-
-  .dashboard {
-    padding:20px;
-  }
-  h2 { color:#222; }
-
-  .card-grid {
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-    gap:15px;
-    margin-top:20px;
-  }
-  .dash-card {
-    background:white;
-    padding:20px;
-    border-radius:12px;
-    box-shadow:0 2px 6px rgba(0,0,0,0.1);
-    text-align:center;
-    border-top:5px solid #c59d45;
-  }
-  .dash-card i {
-    font-size:30px;
-    color:#c59d45;
-    margin-bottom:10px;
-  }
-  .dash-card:hover {
-    transform:scale(1.02);
-    transition:.2s;
-  }
-  .btn {
-    background:#c59d45;
-    color:white;
-    padding:10px 15px;
-    border-radius:6px;
-    display:inline-block;
-    margin-top:15px;
-    text-decoration:none;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Customer Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <header>
+    <h1>Customer Dashboard</h1>
+    <nav>
+      <a href="customer.html">Home</a>
+      <a href="wallet.html">Wallet</a>
+      <a href="track.html">Track Ride</a>
+    </nav>
+  </header>
 
-<header>
-  <div class="logo">ArewaDeliver</div>
-  <nav>
-    <a href="customer_dashboard.html">Dashboard</a>
-    <a href="wallet.html">Wallet</a>
-    <a href="profile.html">Profile</a>
-    <a href="logout.html">Logout</a>
-  </nav>
-</header>
-
-<main class="dashboard">
-  <h2>Welcome, Customer</h2>
-
-  <div class="card-grid">
-
-    <a href="request.html" class="dash-card">
-      <i class="fa-solid fa-motorcycle"></i>
-      <h3>Request Delivery</h3>
-    </a>
-
-    <a href="track.html" class="dash-card">
-      <i class="fa-solid fa-location-dot"></i>
-      <h3>Track Your Order</h3>
-    </a>
-
-    <a href="wallet.html" class="dash-card">
-      <i class="fa-solid fa-wallet"></i>
-      <h3>Wallet</h3>
-    </a>
-
-    <a href="profile.html" class="dash-card">
-      <i class="fa-solid fa-user"></i>
-      <h3>Your Profile</h3>
-    </a>
-
-  </div>
-</main>
-
+  <section class="dashboard">
+    <h2>Welcome!</h2>
+    <a class="btn" href="request.html">Request Ride</a>
+  </section>
 </body>
 </html>
