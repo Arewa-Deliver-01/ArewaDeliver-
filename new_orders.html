@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>New Orders — Vendor</title><link rel="stylesheet" href="style.css"/></head><body>
+<header><div class="logo">ArewaDeliver</div><nav><a href="vendor_dashboard.html">Dashboard</a><a href="manage_orders.html">Manage Orders</a><a href="wallet.html">Wallet</a></nav></header>
+
+<main style="max-width:900px;margin:20px auto;padding:12px">
+  <h2>Create New Order</h2>
+  <div style="background:#fff;padding:14px;border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,0.06);margin-bottom:14px">
+    <form id="createOrderForm">
+      <label>Customer name</label><input name="customer" required/>
+      <label>Pickup location</label><input name="pickup" required/>
+      <label>Drop location</label><input name="drop" required/>
+      <label>Amount (₦)</label><input name="amount" type="number" required/>
+      <div style="margin-top:12px"><button class="btn" type="submit">Create Order</button></div>
+    </form>
+  </div>
+
+  <div style="margin-top:12px">
+    <h3>Your Orders</h3>
+    <div id="myOrders"></div>
+  </div>
+</main>
+
+<script>
+(function(){
+  const users = JSON.parse(localStorage.getItem('arewa_users')||'[]');
+  const session = JSON.parse(localStorage.getItem('arewa_session')||'null');
+  const uid = session? session.user_id : null;
+  const byVendor = JSON.parse(localStorage.getItem('arewa_new_orders')||'{}');
+  if(!byVendor[uid]) byVendor[uid]=[];
+
+  const form = document.getElementById('createOrderForm');
+  const myOrders = document.getElementById('myOrders');
+
+  function render(){
+    myOrders.innerHTML = byVendor[uid].map(o=>`<div class="order-row"><div><strong>${o.id}</strong><div class="muted">${o.customer} • ${o.pickup} → ${o.drop}</div></div><div>₦${o.amount}</div></div>`).join('') || '<p class="muted">No orders yet</p>';
+  }
+
+  form.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(form).entries());
+    const id = 'OD-'+Math.floor(Math.random()*9000+1000);
+    byVendor[uid].unshift({id, customer:data.customer, pickup:data.pickup, drop:data.drop, amount:parseFloat(data.amount), status:'new'});
+    localStorage.setItem('arewa_new_orders', JSON.stringify(byVendor));
+    render();
+    form.reset();
+    alert('Order created');
+  });
+
+  render();
+})();
+</script>
+</body></html>
