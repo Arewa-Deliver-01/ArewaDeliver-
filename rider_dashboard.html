@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
@@ -6,13 +6,11 @@
 <link rel="stylesheet" href="style.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 <style>
-  header{background:#222;color:#fff;padding:14px;display:flex;justify-content:space-between;align-items:center}
-  .logo{color:#c59d45;font-weight:700}
-  nav a{color:#fff;margin-left:12px;text-decoration:none}
-  .dashboard{max-width:980px;margin:18px auto;padding:12px}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
-  .card{background:#fff;padding:18px;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.06);border-top:5px solid #c59d45;text-align:center}
-  .card i{font-size:28px;color:#c59d45;margin-bottom:10px}
+.header-compact{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.panel{background:#fff;padding:14px;border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,0.06);margin-bottom:14px}
+.grid{display:grid;grid-template-columns:1fr 320px;gap:14px}
+@media(max-width:880px){.grid{grid-template-columns:1fr}}
+.job-row{display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:10px;background:#f7f7f7;margin-bottom:8px}
 </style>
 </head>
 <body>
@@ -22,18 +20,104 @@
     <a href="rider_dashboard.html">Dashboard</a>
     <a href="wallet.html">Wallet</a>
     <a href="profile.html">Profile</a>
-    <a href="logout.html">Logout</a>
+    <a href="logout.html" id="logoutLink">Logout</a>
   </nav>
 </header>
 
-<main class="dashboard">
-  <h2>Welcome, Rider</h2>
-  <div class="grid">
-    <a class="card"><i class="fa-solid fa-bell"></i><h3>Available Jobs</h3></a>
-    <a class="card"><i class="fa-solid fa-route"></i><h3>Ongoing Delivery</h3></a>
-    <a class="card" href="wallet.html"><i class="fa-solid fa-wallet"></i><h3>Wallet</h3></a>
-    <a class="card" href="profile.html"><i class="fa-solid fa-id-card"></i><h3>Your Profile</h3></a>
+<main style="max-width:1100px;margin:20px auto;padding:12px">
+  <div class="header-compact">
+    <div>
+      <h2>Welcome, Rider</h2>
+      <p class="muted">Available jobs and ongoing deliveries</p>
+    </div>
+    <div>
+      <a class="btn" href="available_jobs.html"><i class="fa-solid fa-bell"></i> Available Jobs</a>
+      <a class="btn outline" href="ongoing_delivery.html">Ongoing Delivery</a>
+    </div>
+  </div>
+
+  <div class="grid" style="margin-top:12px">
+    <div>
+      <div class="panel">
+        <h3>Active Jobs</h3>
+        <div id="jobsList"></div>
+        <p id="jobsEmpty" class="muted" style="display:none">No jobs available at the moment.</p>
+      </div>
+
+      <div class="panel">
+        <h3>Recent Deliveries</h3>
+        <div id="recentDeliveries"></div>
+      </div>
+    </div>
+
+    <aside>
+      <div class="mini-wallet">
+        <h3>Wallet: ₦<span id="miniWalletBalanceR">0</span></h3>
+        <a class="btn outline" href="wallet.html">View Details</a>
+      </div>
+
+      <div class="panel">
+        <h3>Profile</h3>
+        <p id="riderName">—</p>
+        <a class="btn outline" href="profile.html">Edit Profile</a>
+      </div>
+    </aside>
   </div>
 </main>
+
+<script>
+(function(){
+  const users = JSON.parse(localStorage.getItem('arewa_users')||'[]');
+  const session = JSON.parse(localStorage.getItem('arewa_session')||'null');
+  const uid = session? session.user_id : null;
+  let jobsBy = JSON.parse(localStorage.getItem('arewa_jobs')||'{}');
+
+  if(!jobsBy[uid]){
+    jobsBy[uid] = [
+      {id:'J-9001', pickup:'City Market', drop:'Unguwar Rimi', pay:600, status:'available'},
+      {id:'J-9002', pickup:'Kofar Kaura', drop:'Dutsen Katsina', pay:800, status:'available'}
+    ];
+    localStorage.setItem('arewa_jobs', JSON.stringify(jobsBy));
+  }
+  const jobs = jobsBy[uid];
+
+  function renderJobs(){
+    const list = document.getElementById('jobsList');
+    list.innerHTML = '';
+    if(jobs.length===0){ document.getElementById('jobsEmpty').style.display='block'; return; }
+    document.getElementById('jobsEmpty').style.display='none';
+    jobs.forEach(j=>{
+      const el = document.createElement('div');
+      el.className='job-row';
+      el.innerHTML = `<div><strong>${j.id}</strong><div class="muted">${j.pickup} → ${j.drop}</div></div>
+        <div style="text-align:right">
+          <div>₦${j.pay}</div>
+          <div style="margin-top:8px"><button class="btn" onclick="acceptJob('${j.id}')">Accept</button>
+          <button class="btn outline" onclick="viewDelivery('${j.id}')">View</button></div>
+        </div>`;
+      list.appendChild(el);
+    });
+  }
+
+  window.acceptJob = function(id){
+    const idx = jobs.findIndex(x=>x.id===id);
+    if(idx>=0){ jobs[idx].status='ongoing'; jobs[idx].accepted_at = new Date().toISOString(); localStorage.setItem('arewa_jobs', JSON.stringify(jobsBy)); renderJobs(); alert('Job accepted'); }
+  };
+  window.viewDelivery = function(id){
+    localStorage.setItem('arewa_selected_job', id);
+    location.href = 'delivery_details.html';
+  };
+
+  renderJobs();
+
+  // recent deliveries placeholder
+  document.getElementById('recentDeliveries').innerHTML = '<p class="muted">No recent deliveries.</p>';
+
+  // mini-wallet
+  const user = users.find(u=>u.id===uid) || {wallet:{balance:0}};
+  document.getElementById('miniWalletBalanceR').innerText = user.wallet.balance || 0;
+  document.getElementById('riderName').innerText = user.name || 'Rider';
+})();
+</script>
 </body>
 </html>
