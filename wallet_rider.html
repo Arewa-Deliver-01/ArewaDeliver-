@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Rider Wallet — ArewaDeliver</title><link rel="stylesheet" href="style.css"/>
+<style>
+.page{max-width:720px;margin:28px auto;padding:18px}
+.card{background:#fff;padding:16px;border-radius:12px;box-shadow:0 8px 26px rgba(0,0,0,0.06)}
+.balance{background:linear-gradient(135deg,#00b894,#008f72);color:#fff;padding:16px;border-radius:10px;text-align:center}
+.smallmuted{color:#666}
+.row{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+</style>
+</head>
+<body>
+<header><h1 class="logo">ArewaDeliver</h1><nav><a href="rider_dashboard.html">Dashboard</a><a href="wallet_rider.html">Wallet</a><a href="profile.html">Profile</a></nav></header>
+
+<main class="page">
+  <h2>Rider Wallet</h2>
+  <div class="card">
+    <div class="balance">
+      <div class="smallmuted">Available Balance (Rider)</div>
+      <div id="rBal" style="font-size:2rem;font-weight:700">₦0</div>
+      <div class="smallmuted">Rider ID: <span id="rId">—</span></div>
+    </div>
+
+    <div class="row">
+      <button id="withdrawR" class="btn outline">Withdraw</button>
+      <button id="simulateDelivery" class="btn">Simulate Completed Delivery</button>
+      <button id="clearDemoR" class="btn outline">Clear Demo</button>
+    </div>
+
+    <section style="margin-top:12px">
+      <h3>Transactions</h3>
+      <div id="rTxs"></div>
+    </section>
+  </div>
+</main>
+
+<script>
+/*
+Rider wallet demo logic:
+- When a delivery is completed (simulate), rider earns delivery fee.
+- System fee (3%) + Notification fee (₦50) are deducted from the gross pay.
+- Platform wallet receives system fee + notification fee.
+*/
+(function(){
+  const USERS_KEY='arewa_users', PLATFORM_KEY='arewa_platform';
+  const SYSTEM_FEE = 0.03; // 3%
+  const NOTIF_FEE = 50;
+  let users = JSON.parse(localStorage.getItem(USERS_KEY)||'[]');
+  if(!users.length){
+    // seed rider & customer for demo
+    const r = { id:3001, name:'DemoRider', email:'rider@demo', role:'rider', wallet:{balance:0,transactions:[]} };
+    users = [{id:1001,name:'DemoCustomer',email:'cust@demo',role:'customer',wallet:{balance:5000,transactions:[]}}, r];
+    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+  }
+  if(!localStorage.getItem(PLATFORM_KEY)) localStorage.setItem(PLATFORM_KEY, JSON.stringify({wallet:{balance:0,transactions:[]}}));
+
+  const me = users.find(u=>u.role==='rider') || users[0];
+  const rBal = document.getElementById('rBal');
+  const rId = document.getElementById('rId');
+  const rTxs = document.getElementById('rTxs');
+
+  function fmt(n){ return '₦'+Number(n).toLocaleString(); }
+  function render(){
+    rBal.textContent = fmt(me.wallet.balance || 0);
+    rId.textContent = me.id;
+    const tx = me.wallet.transactions || [];
+    rTxs.innerHTML = tx.length ? tx.map(t=>`<div class="txn card" style="margin-bottom:8px;padding:10px"><div><strong>${t.title}</strong><div class="smallmuted">${new Date(t.date).toLocaleString()}</div></div><div style="text-align:right">${t.type==='credit'? '+'+t.amount : '-'+t.amount}</div></div>`).join('') : '<p class="smallmuted">No transactions yet</p>';
+  }
+  render();
+
+  document.getElementById('simulateDelivery').addEventListener('click', ()=>{
+    const pay = Number(prompt('Enter gross delivery pay (₦)','1500')) || 0;
+    if(pay<=0) return;
+    const platform = JSON.parse(localStorage.getItem(PLATFORM_KEY)||'{"wallet":{balance:0,transactions:[]}}');
+
+    // fees
+    const sysFee = Math.round(pay * SYSTEM_FEE);
+    const notif = NOTIF_FEE;
+    const riderNet = pay - sysFee - notif;
+
+    // add to rider
+    me.wallet.balance = Number(me.wallet.balance || 0) + riderNet;
+    me.wallet.transactions = me.wallet.transactions || [];
+    me.wallet.transactions.unshift({title:`Delivery settled`, amount: fmt(riderNet), type:'credit', date:new Date().toISOString()});
+
+    // platform handles fees: assume pay was in platform reserve; we'll add fees to platform wallet
+    platform.wallet.balance = Number(platform.wallet.balance || 0) + sysFee + notif;
+    platform.wallet.transactions = platform.wallet.transactions || [];
+    platform.wallet.transactions.unshift({title:`SystemFee ${sysFee} + Notif ${notif}`, amount: fmt(sysFee+notif), type:'credit', date:new Date().toISOString()});
+
+    // persist
+    localStorage.setItem(PLATFORM_KEY, JSON.stringify(platform));
+    users = users.map(u=> u.id===me.id ? me : u);
+    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    render();
+    alert(`Delivery settled. Rider received ${fmt(riderNet)} (SysFee ${fmt(sysFee)} + Notif ${fmt(notif)} applied).`);
+  });
+
+  document.getElementById('withdrawR').addEventListener('click', ()=>{
+    const w = Number(prompt('Withdraw amount (₦)','500')) || 0;
+    if(w<=0) return;
+    if((me.wallet.balance||0) < w) return alert('Insufficient funds');
+    me.wallet.balance -= w;
+    me.wallet.transactions.unshift({title:'Withdraw', amount:`-${fmt(w)}`, type:'debit', date:new Date().toISOString()});
+    users = users.map(u=> u.id===me.id ? me : u);
+    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    render(); alert('Withdraw simulated (demo).');
+  });
+
+  document.getElementById('clearDemoR').addEventListener('click', ()=>{
+    if(!confirm('Clear demo users & platform?')) return;
+    localStorage.removeItem(USERS_KEY);
+    localStorage.removeItem(PLATFORM_KEY);
+    alert('Cleared. Reload page.');
+    location.reload();
+  });
+
+})();
+</script>
+</body>
+  </html>
