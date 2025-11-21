@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Redirecting...</title>
+</head>
+
+<body>
+<script>
+// Check session
+const session = JSON.parse(localStorage.getItem("arewa_session") || "null");
+if (!session) {
+    location.href = "login.html";
+}
+
+// Check users storage
+const users = JSON.parse(localStorage.getItem("arewa_users") || "[]");
+const user = users.find(u => u.email === session.email);
+
+if (!user) {
+    alert("User account not found. Please login again.");
+    localStorage.removeItem("arewa_session");
+    location.href = "login.html";
+}
+
+// Auto–redirect based on role
+if (user.role === "customer") {
+    location.href = "wallet_customer.html";
+} 
+else if (user.role === "vendor") {
+    location.href = "wallet_vendor.html";
+} 
+else if (user.role === "rider") {
+    location.href = "wallet_rider.html";
+} 
+else {
+    alert("Unknown account type.");
+    location.href = "index.html";
+}
+</script>
+
+<p style="text-align:center; margin-top:40px; font-family:Arial;">
+Redirecting to your wallet...
+</p>
+
+</body>
+</html>
