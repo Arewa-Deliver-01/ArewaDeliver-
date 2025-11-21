@@ -1,155 +1,72 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Vendor Dashboard — ArewaDeliver</title>
-<link rel="stylesheet" href="style.css" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link rel="stylesheet" href="style.css"/>
 <style>
-/* small overrides */
-.header-compact { display:flex; justify-content:space-between; align-items:center; gap:12px; }
-.stats { display:flex; gap:12px; margin:18px 0; flex-wrap:wrap; }
-.stat { flex:1; min-width:140px; background:#fff; padding:14px; border-radius:12px; box-shadow:0 6px 20px rgba(0,0,0,0.06); border-top:5px solid #c59d45; text-align:center;}
-.panel { background:#fff; padding:14px; border-radius:12px; box-shadow:0 6px 20px rgba(0,0,0,0.06); margin-bottom:14px; }
-.grid { display:grid; grid-template-columns: 1fr 320px; gap:14px; align-items:start; }
-@media(max-width:880px){ .grid{grid-template-columns:1fr} .stat{min-width:100%} }
-.order-row{display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:10px;background:#f7f7f7;margin-bottom:8px}
-.order-actions button{margin-left:8px}
+.header-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:18px}
+.card{background:#fff;padding:18px;border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,0.06);border-top:5px solid #c59d45;text-decoration:none;color:inherit}
+.stat{font-size:1.6rem;font-weight:700}
 </style>
 </head>
 <body>
 <header>
-  <div class="logo">ArewaDeliver</div>
+  <h1 class="logo">ArewaDeliver</h1>
   <nav>
     <a href="vendor_dashboard.html">Dashboard</a>
     <a href="wallet.html">Wallet</a>
-    <a href="profile.html">Profile</a>
+    <a href="vendor.html">Store Profile</a>
     <a href="logout.html" id="logoutLink">Logout</a>
   </nav>
 </header>
 
-<main style="max-width:1100px;margin:20px auto;padding:12px">
-  <div class="header-compact">
+<main class="dashboard" style="max-width:1100px;margin:18px auto;padding:12px">
+  <div class="header-row">
     <div>
-      <h2>Welcome, Vendor</h2>
-      <p class="muted">Overview of today's activity & quick actions</p>
+      <h2>Welcome Vendor</h2>
+      <p class="muted">Manage orders, view stats and access wallet.</p>
     </div>
-    <div>
-      <a class="btn" href="new_orders.html"><i class="fa-solid fa-plus"></i> New Orders</a>
-      <a class="btn outline" href="manage_orders.html">Manage Orders</a>
+    <div class="mini-wallet-inline" style="text-align:right">
+      <div style="font-size:0.9rem">Wallet</div>
+      <div id="vendorMiniBal" class="stat">₦0</div>
+      <a class="btn outline" href="wallet.html" style="margin-top:8px;display:inline-block">Open Wallet</a>
     </div>
   </div>
 
-  <div class="grid" style="margin-top:12px">
-    <!-- main column -->
-    <div>
-      <div class="stats">
-        <div class="stat"><h3 id="statNew">0</h3><small>New</small></div>
-        <div class="stat"><h3 id="statOngoing">0</h3><small>Ongoing</small></div>
-        <div class="stat"><h3 id="statCompleted">0</h3><small>Completed</small></div>
-      </div>
+  <div class="grid">
+    <a class="card" href="new_orders.html">
+      <h3>New Orders</h3>
+      <p class="small">See fresh orders from customers</p>
+    </a>
 
-      <div class="panel">
-        <h3>Recent Orders</h3>
-        <div id="ordersList"></div>
-        <p id="ordersEmpty" class="muted" style="display:none">No orders — new orders will appear here.</p>
-      </div>
+    <a class="card" href="manage_orders.html">
+      <h3>Manage Orders</h3>
+      <p class="small">Accept, update status and communicate with riders</p>
+    </a>
 
-      <div class="panel">
-        <h3>Quick Actions</h3>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <a class="btn" href="new_orders.html">Create Order</a>
-          <a class="btn outline" href="store_profile.html">Edit Store</a>
-        </div>
-      </div>
-    </div>
+    <a class="card" href="wallet.html">
+      <h3>Wallet</h3>
+      <p class="small">Balance and transaction history</p>
+    </a>
 
-    <!-- sidebar -->
-    <aside>
-      <div class="mini-wallet" id="miniWalletSmall">
-        <h3>Wallet: ₦<span id="miniWalletBalance">0</span></h3>
-        <a class="btn outline" href="wallet.html">View Details</a>
-      </div>
-
-      <div class="panel">
-        <h3>Store</h3>
-        <p id="storeName">—</p>
-        <a class="btn outline" href="store_profile.html">Open Store Profile</a>
-      </div>
-    </aside>
+    <a class="card" href="store_profile.html">
+      <h3>Store Profile</h3>
+      <p class="small">Edit your store details & settings</p>
+    </a>
   </div>
 </main>
 
 <script>
-// Demo data helper (localStorage)
 (function(){
+  const s = JSON.parse(localStorage.getItem('arewa_session')||'null');
   const users = JSON.parse(localStorage.getItem('arewa_users')||'[]');
-  const session = JSON.parse(localStorage.getItem('arewa_session')||'null');
-  const uid = session? session.user_id : null;
-
-  // demo orders list keyed by vendor id
-  let ordersByVendor = JSON.parse(localStorage.getItem('arewa_new_orders')||'{}');
-  if(!ordersByVendor[uid]){
-    // seed demo orders for first time
-    ordersByVendor[uid] = [
-      {id: 'OD-1001', customer:'Amina', amount:1200, status:'new', pickup:'Kofar Kaura', drop:'Kofar Doka'},
-      {id: 'OD-1002', customer:'Hassan', amount:500, status:'accepted', pickup:'City Market', drop:'Unguwar Rimi'},
-      {id: 'OD-1003', customer:'Maryam', amount:2200, status:'delivered', pickup:'Dutsen Katsina', drop:'Katsina Main'}
-    ];
-    localStorage.setItem('arewa_new_orders', JSON.stringify(ordersByVendor));
+  const me = users.find(u=>u.id===s?.user_id) || users.find(u=>u.role==='vendor');
+  if(me){
+    document.getElementById('vendorMiniBal').innerText = '₦'+(me.wallet?.balance || 0);
   }
-
-  const orders = ordersByVendor[uid] || [];
-
-  function renderOrders(){
-    const list = document.getElementById('ordersList');
-    list.innerHTML = '';
-    if(orders.length===0){ document.getElementById('ordersEmpty').style.display='block'; return; }
-    document.getElementById('ordersEmpty').style.display='none';
-    let newCount=0, ong=0, comp=0;
-    orders.forEach(o=>{
-      if(o.status==='new') newCount++;
-      if(o.status==='accepted' || o.status==='ongoing') ong++;
-      if(o.status==='delivered' || o.status==='completed') comp++;
-      const div = document.createElement('div');
-      div.className='order-row';
-      div.innerHTML = `<div>
-          <strong>${o.id}</strong><div class="muted">${o.customer} • ${o.pickup} → ${o.drop}</div>
-        </div>
-        <div style="text-align:right">
-          <div>₦${o.amount}</div>
-          <div class="order-actions">
-            <button class="btn outline" onclick="viewOrder('${o.id}')">View</button>
-            ${o.status==='new'? `<button class="btn" onclick="acceptOrder('${o.id}')">Accept</button>` : ''}
-          </div>
-        </div>`;
-      list.appendChild(div);
-    });
-    document.getElementById('statNew').innerText = newCount;
-    document.getElementById('statOngoing').innerText = ong;
-    document.getElementById('statCompleted').innerText = comp;
-  }
-
-  window.viewOrder = function(id){
-    // store selected order id and open details page
-    localStorage.setItem('arewa_selected_order', id);
-    location.href = 'delivery_details.html';
-  };
-  window.acceptOrder = function(id){
-    const idx = orders.findIndex(o=>o.id===id);
-    if(idx>=0){ orders[idx].status='accepted'; localStorage.setItem('arewa_new_orders', JSON.stringify(ordersByVendor)); renderOrders(); alert('Order accepted'); }
-  };
-
-  // store data back
-  ordersByVendor[uid] = orders;
-  localStorage.setItem('arewa_new_orders', JSON.stringify(ordersByVendor));
-  renderOrders();
-
-  // mini-wallet
-  const user = users.find(u=>u.id===uid) || {wallet:{balance:0}};
-  document.getElementById('miniWalletBalance').innerText = user.wallet.balance || 0;
-  document.getElementById('storeName').innerText = user.vendor_business || 'Your Store';
+  document.getElementById('logoutLink').addEventListener('click', ()=>{ localStorage.removeItem('arewa_session'); location.href='index.html'; });
 })();
 </script>
 </body>
