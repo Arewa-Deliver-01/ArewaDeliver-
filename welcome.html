@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Welcome - ArewaDelivery</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        body { font-family: Arial, sans-serif; background: #f6fff7; margin:0; padding:20px; }
+        .card { max-width:900px; margin:40px auto; background:#fff; padding:24px; border-radius:12px; box-shadow:0 8px 30px rgba(0,0,0,0.06);}
+        h1{color:#083823;}
+        p{color:#4b5563;}
+        .actions { margin-top:20px; }
+        .btn { padding:10px 16px; border-radius:999px; border:none; background:#00b894; color:#fff; font-weight:700; cursor:pointer; margin-right:10px; text-decoration:none;}
+        .btn.secondary{ background:#fff; color:#00b894; border:2px solid #00b894; }
+    </style>
+</head>
+<body>
+    <div class="card" role="main" aria-live="polite">
+        <h1>{{ message }}</h1>
+
+        {% if role == 'customer' %}
+            <p>You can now request deliveries, track orders, and manage your wallet.</p>
+            <div class="actions">
+                <a class="btn" href="{{ url_for('static', filename='customer_dashboard.html') }}">Go to Dashboard</a>
+                <a class="btn secondary" href="{{ url_for('static', filename='wellet.html') }}">Wallet</a>
+            </div>
+
+        {% elif role == 'vendor' %}
+            <p>Please complete your store profile to activate your account. Once activated, you can start receiving delivery orders.</p>
+            <div class="actions">
+                <a class="btn" href="{{ url_for('static', filename='vendor_dashboard.html') }}">Go to Dashboard</a>
+                <a class="btn secondary" href="{{ url_for('static', filename='wellet.html') }}">Wallet</a>
+            </div>
+
+        {% elif role == 'rider' %}
+            <p>Complete your KYC and registration payment to activate your account and start accepting delivery tasks.</p>
+            <div class="actions">
+                <a class="btn" href="{{ url_for('static', filename='rider_dashboard.html') }}">Go to Dashboard</a>
+                <a class="btn secondary" href="{{ url_for('static', filename='wellet.html') }}">Wallet</a>
+            </div>
+
+        {% else %}
+            <p>Welcome! Please sign in or contact support if you need help.</p>
+            <div class="actions">
+                <a class="btn" href="/">Home</a>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
