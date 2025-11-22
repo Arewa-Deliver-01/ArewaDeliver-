@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Reset password — ArewaDeliver</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    .card{max-width:560px;margin:48px auto;padding:18px;background:#fff;border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,0.06)}
+    label{display:block;margin-top:12px;font-weight:600}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Reset password</h2>
+    <p class="muted">Enter a new password for your account.</p>
+
+    <form method="POST" action="{{ url_for('reset_with_token', token=token) }}">
+      <label for="password">New password</label>
+      <input id="password" name="password" type="password" minlength="6" required />
+      <div style="margin-top:12px">
+        <button class="btn" type="submit">Change password</button>
+        <a class="btn outline" href="{{ url_for('login') }}">Back to Login</a>
+      </div>
+    </form>
+  </div>
+</body>
+</html>
