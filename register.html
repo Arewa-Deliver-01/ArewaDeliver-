@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Register{% endblock %}
+{% block content %}
+<div class="card form-wrap">
+  <h2>Create an account</h2>
+  <p class="hint">Choose a role — vendors and riders may require verification and onboarding fees.</p>
+
+  <form action="{{ url_for('register') }}" method="POST" id="regForm" novalidate>
+    <div class="row">
+      <div class="col">
+        <label>Full name</label>
+        <input name="fullname" required />
+      </div>
+      <div class="col">
+        <label>Email</label>
+        <input name="email" type="email" required />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <label>Phone</label>
+        <input name="phone" type="tel" required />
+      </div>
+      <div class="col">
+        <label>Password</label>
+        <input id="password" name="password" type="password" minlength="6" required />
+        <div id="pwHint" class="inline-help">Use at least 6 characters.</div>
+      </div>
+    </div>
+
+    <label>Account type</label>
+    <select id="role" name="role" required>
+      <option value="customer">Customer</option>
+      <option value="vendor">Vendor</option>
+      <option value="rider">Rider</option>
+    </select>
+
+    <div id="vendorBlock" class="sub-block">
+      <label>Business name (vendors)</label>
+      <input name="vendor_business" />
+      <label>Registration ID (optional)</label>
+      <input name="vendor_reg" />
+    </div>
+
+    <div id="riderBlock" class="sub-block">
+      <label>Vehicle type (rider)</label>
+      <input name="rider_vehicle" placeholder="e.g. Motorcycle" />
+      <label>National ID (for KYC)</label>
+      <input name="rider_idno" />
+    </div>
+
+    <div class="form-actions">
+      <label class="checkbox">
+        <input type="checkbox" name="agree" required> I agree to <a href="/terms">Terms & Conditions</a>
+      </label>
+      <div class="buttons">
+        <button class="btn" type="submit">Register</button>
+        <a class="btn outline" href="{{ url_for('login') }}">Already have account</a>
+      </div>
+    </div>
+
+    <p class="muted">Demo mode: verification code is <strong>123456</strong>. In production this will be emailed or SMSed.</p>
+  </form>
+</div>
+
+<script>
+  (function(){
+    const role = document.getElementById('role');
+    const vendorBlock = document.getElementById('vendorBlock');
+    const riderBlock = document.getElementById('riderBlock');
+    function onChange(){
+      vendorBlock.style.display = role.value === 'vendor' ? 'block' : 'none';
+      riderBlock.style.display = role.value === 'rider' ? 'block' : 'none';
+    }
+    role.addEventListener('change', onChange);
+    onChange();
+    const pw = document.getElementById('password');
+    const hint = document.getElementById('pwHint');
+    pw.addEventListener('input', ()=> {
+      const v = pw.value || '';
+      hint.textContent = v.length < 6 ? 'Too short' : 'Good password';
+    });
+  })();
+</script>
+{% endblock %}

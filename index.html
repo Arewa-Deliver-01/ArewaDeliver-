@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+  <section class="hero">
+    <h1>Fast & Reliable Delivery in Katsina</h1>
+    <p>Connect with vendors and riders — ArewaDeliver makes deliveries easy.</p>
+    <div class="hero-actions">
+      <a class="btn" href="{{ url_for('register') }}">Create Account</a>
+      <a class="btn outline" href="{{ url_for('register') }}">Request Delivery</a>
+    </div>
+  </section>
+{% endblock %}

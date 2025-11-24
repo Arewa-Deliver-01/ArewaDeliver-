@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Rider Dashboard{% endblock %}
+{% block content %}
+<h2>Welcome Rider, {{ user.fullname or user.email }}</h2>
+<p class="muted">View available jobs and manage deliveries.</p>
+
+<div style="margin-bottom:14px">
+  <button id="btnPerm" class="btn">Enable Notifications</button>
+  <button id="btnSim" class="btn outline">Simulate Job</button>
+</div>
+
+<div class="grid">
+  <a class="card" href="#">Available Jobs</a>
+  <a class="card" href="#">Ongoing Delivery</a>
+  <a class="card" href="{{ url_for('welcome', role='rider') }}">Wallet</a>
+  <a class="card" href="#">Profile</a>
+</div>
+
+<script>
+  document.getElementById('btnPerm').addEventListener('click', async ()=>{
+    if(!('Notification' in window)) return alert('Notifications not supported');
+    const p = await Notification.requestPermission(); if(p==='granted') alert('Notifications allowed');
+  });
+  document.getElementById('btnSim').addEventListener('click', async ()=>{
+    await fetch('/notify', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({role:'rider', message:'Simulated job #'+Math.floor(Math.random()*900+100)})
+    });
+    alert('Simulated job generated');
+  });
+  setInterval(async ()=>{
+    try {
+      const res = await fetch('/notifications'); if(res.status===401) return;
+      const j = await res.json();
+      if(j.ok && j.notifications.length){
+        j.notifications.forEach(n=>{
+          if(Notification.permission==='granted') new Notification('ArewaDeliver', {body:n.message});
+          else alert('Notification: '+n.message);
+        });
+      }
+    } catch(e){console.error(e)}
+  }, 5000);
+</script>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Customer Dashboard{% endblock %}
+{% block content %}
+<h2>Welcome, {{ user.fullname or user.email }}</h2>
+<p class="muted">Customer dashboard — request deliveries, track orders, manage wallet.</p>
+
+<div class="grid">
+  <a class="card" href="#">Request Delivery</a>
+  <a class="card" href="#">Track Order</a>
+  <a class="card" href="{{ url_for('welcome', role='customer') }}">Wallet</a>
+  <a class="card" href="#">Profile</a>
+</div>
+{% endblock %}
