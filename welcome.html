@@ -1,21 +1,12 @@
->{% extends "base.html" %}
+{% extends 'base.html' %}
 {% block title %}Welcome{% endblock %}
 {% block content %}
-<div class="card welcome-card">
-  <div class="badge">✓</div>
-  <h2 id="title">{{ message }}</h2>
-
-  {% if role == 'customer' %}
-    <p>You can now request deliveries, track orders, and manage your wallet.</p>
-    <a class="btn" href="{{ url_for('customer_dashboard') }}">Go to Dashboard</a>
-  {% elif role == 'vendor' %}
-    <p>Please complete your store profile to activate your account and start receiving orders.</p>
-    <a class="btn" href="{{ url_for('vendor_dashboard') }}">Go to Dashboard</a>
-  {% elif role == 'rider' %}
-    <p>Complete your KYC and registration payment to activate your account and accept jobs.</p>
-    <a class="btn" href="{{ url_for('rider_dashboard') }}">Go to Dashboard</a>
-  {% else %}
-    <a class="btn" href="{{ url_for('index') }}">Home</a>
-  {% endif %}
-</div>
+<h2>{{ message }}</h2>
+{% if role == 'customer' %}
+    <p>Start exploring Arewa Delivery services now!</p>
+{% elif role == 'vendor' %}
+    <p>Complete your shop profile to receive orders immediately.</p>
+{% elif role == 'rider' %}
+    <p>Complete your KYC and registration payment to activate your dashboard.</p>
+{% endif %}
 {% endblock %}
