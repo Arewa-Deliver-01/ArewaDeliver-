@@ -1,33 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Track Delivery - Arewadeliver</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-
-<header class="nav-header">
-    <h2>Arewadeliver</h2>
-</header>
-
-<div class="container">
-    <h2>Track Your Delivery</h2>
-    <p>Enter your tracking ID to see the status of your delivery.</p>
-
-    <form id="trackForm">
-        <input type="text" id="trackingId" placeholder="Enter Tracking ID" required>
-        <button type="submit">Track Now</button>
-    </form>
-
-    <div id="trackingResult" class="tracking-box" style="display:none;">
-        <h3>Status:</h3>
-        <p id="statusText"></p>
-    </div>
-</div>
-
-<script src="app.js"></script>
-
-</body>
-</html>
+{% extends 'base.html' %}
+{% block title %}Track Order{% endblock %}
+{% block content %}
+<h2>Track your delivery</h2>
+<p>Enter order ID to check status:</p>
+<form id="trackForm">
+    <input type="text" placeholder="Order ID" required>
+    <button class="btn" type="submit">Track</button>
+</form>
+<div id="trackResult"></div>
+<script>
+document.getElementById('trackForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const orderId = e.target[0].value;
+    document.getElementById('trackResult').innerHTML = `<p>Status for ${orderId}: In transit (Demo)</p>`;
+});
+</script>
+{% endblock %}
