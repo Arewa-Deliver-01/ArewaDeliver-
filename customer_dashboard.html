@@ -1,75 +1,13 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Customer Dashboard — ArewaDeliver</title>
-<link rel="stylesheet" href="style.css"/>
-<style>
-.dashboard-header { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
-.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin-top:18px; }
-.card { background:#fff; padding:18px; border-radius:12px; box-shadow:0 8px 28px rgba(0,0,0,0.06); border-top:5px solid #c59d45; text-decoration:none; color:inherit; display:flex; flex-direction:column; gap:8px; }
-.mini-wallet-inline { border-radius:10px; padding:12px; color:#fff; background:linear-gradient(135deg,#00b894,#008f72); text-align:center; }
-.quick-actions { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
-</style>
-</head>
-<body>
-<header>
-  <h1 class="logo">ArewaDeliver</h1>
-  <nav>
-    <a href="customer_dashboard.html">Dashboard</a>
-    <a href="wallet.html">Wallet</a>
-    <a href="profile.html">Profile</a>
-    <a href="logout.html" id="logoutLink">Logout</a>
-  </nav>
-</header>
+{% extends "base.html" %}
+{% block title %}Customer Dashboard{% endblock %}
+{% block content %}
+<h2>Welcome, {{ user.fullname or user.email }}</h2>
+<p class="muted">Customer dashboard — request deliveries, track orders, manage wallet.</p>
 
-<main class="dashboard" style="max-width:980px;margin:18px auto;padding:12px">
-  <div class="dashboard-header">
-    <div>
-      <h2>Welcome, <span id="custName">Customer</span></h2>
-      <p class="muted">Fast & reliable delivery across Katsina.</p>
-    </div>
-    <div class="mini-wallet-inline">
-      <div style="font-size:0.9rem">Wallet</div>
-      <div id="miniBal" style="font-size:1.2rem;font-weight:700">₦0</div>
-      <a class="btn outline" href="wallet.html" style="margin-top:8px;display:inline-block">Open Wallet</a>
-    </div>
-  </div>
-
-  <div class="grid">
-    <a class="card" href="request.html">
-      <h3>Request Delivery</h3>
-      <p class="small">Create a new delivery request and track it in real-time.</p>
-    </a>
-
-    <a class="card" href="track.html">
-      <h3>Track Order</h3>
-      <p class="small">Enter tracking ID to follow your delivery.</p>
-    </a>
-
-    <a class="card" href="wallet.html">
-      <h3>Wallet</h3>
-      <p class="small">Add funds, withdraw, view transactions.</p>
-    </a>
-
-    <a class="card" href="profile.html">
-      <h3>Your Profile</h3>
-      <p class="small">Update contact and KYC information.</p>
-    </a>
-  </div>
-</main>
-
-<script>
-(function(){
-  const s = JSON.parse(localStorage.getItem('arewa_session')||'null');
-  const users = JSON.parse(localStorage.getItem('arewa_users')||'[]');
-  const me = users.find(u=>u.id===s?.user_id) || users.find(u=>u.role==='customer') || null;
-  if(me){
-    document.getElementById('custName').innerText = me.name || 'Customer';
-    document.getElementById('miniBal').innerText = '₦'+(me.wallet?.balance || 0);
-  }
-  document.getElementById('logoutLink').addEventListener('click', ()=>{ localStorage.removeItem('arewa_session'); location.href='index.html'; });
-})();
-</script>
-</body>
-</html>
+<div class="grid">
+  <a class="card" href="#">Request Delivery</a>
+  <a class="card" href="#">Track Order</a>
+  <a class="card" href="{{ url_for('welcome', role='customer') }}">Wallet</a>
+  <a class="card" href="#">Profile</a>
+</div>
+{% endblock %}

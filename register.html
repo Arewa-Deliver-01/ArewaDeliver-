@@ -1,151 +1,86 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Register — ArewaDeliver</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
-  <style>
-    /* Small page-specific styles (keeps look consistent) */
-    .form-wrap{max-width:820px;margin:28px auto;background:#fff;padding:26px;border-radius:14px; box-shadow:0 12px 34px rgba(0,0,0,0.07)}
-    label{display:block;font-weight:600;margin-top:12px}
-    .hint{font-size:13px;color:#666;margin-top:8px}
-    .row-flex{display:flex;gap:12px;flex-wrap:wrap}
-    .col{flex:1 1 220px;min-width:200px}
-    .muted{color:#6b7280;font-size:0.95rem}
-    .inline-help{font-size:13px;color:#9ca3af;margin-top:6px}
-    .forgot-link{font-size:0.95rem;margin-left:8px}
-    @media(max-width:680px){ .row-flex{flex-direction:column} }
-  </style>
-</head>
-<body>
-<header style="padding:14px 20px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.04)">
-  <h1 class="logo" style="margin:0">ArewaDeliver</h1>
-  <nav style="margin-top:8px">
-    <a href="{{ url_for('home') }}">Home</a> &nbsp; <a href="{{ url_for('login') }}">Login</a>
-  </nav>
-</header>
+{% extends "base.html" %}
+{% block title %}Register{% endblock %}
+{% block content %}
+<div class="card form-wrap">
+  <h2>Create an account</h2>
+  <p class="hint">Choose a role — vendors and riders may require verification and onboarding fees.</p>
 
-<main class="container" style="padding:24px">
-  <div class="form-wrap" role="form" aria-labelledby="regHeader">
-    <h2 id="regHeader">Create an account</h2>
-    <p class="hint">Choose a role — vendors and riders may require additional verification and onboarding fees.</p>
-
-    <!-- Flask form: posts to /register -->
-    <form id="regForm" action="{{ url_for('register') }}" method="POST" novalidate>
-      <div class="row-flex">
-        <div class="col">
-          <label for="fullname">Full name</label>
-          <input id="fullname" name="fullname" type="text" required />
-        </div>
-
-        <div class="col">
-          <label for="email">Email</label>
-          <input id="email" name="email" type="email" required />
-        </div>
+  <form action="{{ url_for('register') }}" method="POST" id="regForm" novalidate>
+    <div class="row">
+      <div class="col">
+        <label>Full name</label>
+        <input name="fullname" required />
       </div>
-
-      <div class="row-flex">
-        <div class="col">
-          <label for="phone">Phone</label>
-          <input id="phone" name="phone" type="tel" inputmode="tel" required />
-        </div>
-
-        <div class="col">
-          <label for="password">Password</label>
-          <input id="password" name="password" type="password" minlength="6" required />
-          <div id="pwHint" class="inline-help">Use at least 6 characters — include letters & numbers for stronger password.</div>
-        </div>
+      <div class="col">
+        <label>Email</label>
+        <input name="email" type="email" required />
       </div>
+    </div>
 
-      <label for="role">Account type</label>
-      <select id="role" name="role" required>
-        <option value="customer">Customer</option>
-        <option value="vendor">Vendor</option>
-        <option value="rider">Rider</option>
-      </select>
-
-      <!-- Vendor fields -->
-      <div id="vendorBlock" style="display:none;margin-top:12px">
-        <label for="vendor_business">Business name (vendors)</label>
-        <input id="vendor_business" name="vendor_business" />
-
-        <label for="vendor_reg">Registration ID (optional)</label>
-        <input id="vendor_reg" name="vendor_reg" />
-        <p class="muted" style="margin-top:8px">Vendors will be asked to complete a store profile and KYC after registration.</p>
+    <div class="row">
+      <div class="col">
+        <label>Phone</label>
+        <input name="phone" type="tel" required />
       </div>
-
-      <!-- Rider fields -->
-      <div id="riderBlock" style="display:none;margin-top:12px">
-        <label for="rider_vehicle">Vehicle type (rider)</label>
-        <input id="rider_vehicle" name="rider_vehicle" placeholder="e.g. Motorcycle, Tricycle" />
-
-        <label for="rider_idno">National ID (for KYC)</label>
-        <input id="rider_idno" name="rider_idno" />
-        <p class="muted" style="margin-top:8px">Riders are required to complete KYC and pay registration fee to activate their account.</p>
+      <div class="col">
+        <label>Password</label>
+        <input id="password" name="password" type="password" minlength="6" required />
+        <div id="pwHint" class="inline-help">Use at least 6 characters.</div>
       </div>
+    </div>
 
-      <!-- Terms + forgot password -->
-      <div style="margin-top:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-        <label style="display:flex;align-items:center;gap:8px">
-          <input type="checkbox" name="agree" id="agree" required />
-          <span class="muted">I agree to the <a href="/terms" target="_blank">Terms &amp; Conditions</a></span>
-        </label>
+    <label>Account type</label>
+    <select id="role" name="role" required>
+      <option value="customer">Customer</option>
+      <option value="vendor">Vendor</option>
+      <option value="rider">Rider</option>
+    </select>
 
-        <div style="margin-left:auto">
-          <a class="forgot-link" href="{{ url_for('forgot') }}">Forgot password?</a>
-        </div>
-      </div>
+    <div id="vendorBlock" class="sub-block">
+      <label>Business name (vendors)</label>
+      <input name="vendor_business" />
+      <label>Registration ID (optional)</label>
+      <input name="vendor_reg" />
+    </div>
 
-      <div style="margin-top:18px;display:flex;gap:8px;flex-wrap:wrap">
+    <div id="riderBlock" class="sub-block">
+      <label>Vehicle type (rider)</label>
+      <input name="rider_vehicle" placeholder="e.g. Motorcycle" />
+      <label>National ID (for KYC)</label>
+      <input name="rider_idno" />
+    </div>
+
+    <div class="form-actions">
+      <label class="checkbox">
+        <input type="checkbox" name="agree" required> I agree to <a href="/terms">Terms & Conditions</a>
+      </label>
+      <div class="buttons">
         <button class="btn" type="submit">Register</button>
         <a class="btn outline" href="{{ url_for('login') }}">Already have account</a>
       </div>
+    </div>
 
-      <p class="muted" style="margin-top:12px">Demo mode stores users locally. Production requires secure backend storage, hashed passwords and payment integration for onboarding fees.</p>
-    </form>
-  </div>
-</main>
+    <p class="muted">Demo mode: verification code is <strong>123456</strong>. In production this will be emailed or SMSed.</p>
+  </form>
+</div>
 
 <script>
-  // Show/hide vendor & rider blocks
   (function(){
-    const roleEl = document.getElementById('role');
+    const role = document.getElementById('role');
     const vendorBlock = document.getElementById('vendorBlock');
     const riderBlock = document.getElementById('riderBlock');
-
-    function onRoleChange(){
-      const r = roleEl.value;
-      vendorBlock.style.display = r === 'vendor' ? 'block' : 'none';
-      riderBlock.style.display = r === 'rider' ? 'block' : 'none';
+    function onChange(){
+      vendorBlock.style.display = role.value === 'vendor' ? 'block' : 'none';
+      riderBlock.style.display = role.value === 'rider' ? 'block' : 'none';
     }
-    roleEl.addEventListener('change', onRoleChange);
-    onRoleChange();
-
-    // password hint + basic strength indicator
+    role.addEventListener('change', onChange);
+    onChange();
     const pw = document.getElementById('password');
-    const pwHint = document.getElementById('pwHint');
-    pw.addEventListener('input', ()=>{
+    const hint = document.getElementById('pwHint');
+    pw.addEventListener('input', ()=> {
       const v = pw.value || '';
-      if(v.length < 6) pwHint.textContent = 'Too short — use at least 6 characters';
-      else if(/[0-9]/.test(v) && /[A-Za-z]/.test(v)) pwHint.textContent = 'Good password';
-      else pwHint.textContent = 'Consider mixing letters and numbers for stronger password';
-    });
-
-    // Optional: client-side pre-check before sending to server
-    const form = document.getElementById('regForm');
-    form.addEventListener('submit', (e)=>{
-      if(!form.checkValidity()){
-        // Let browser show native errors
-        return;
-      }
-      // Optionally: show "processing" state
-      const btn = form.querySelector('button[type=submit]');
-      btn.disabled = true;
-      btn.textContent = 'Processing...';
-      // allow submit to go to Flask backend
+      hint.textContent = v.length < 6 ? 'Too short' : 'Good password';
     });
   })();
 </script>
-</body>
-</html>
+{% endblock %}

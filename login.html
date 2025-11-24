@@ -1,68 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Login — ArewaDeliver</title>
-  <link rel="stylesheet" href="style.css" />
-  <style>
-    .form-wrap {
-      max-width: 520px;
-      margin: 40px auto;
-      padding: 22px;
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-    }
-  </style>
-</head>
-<body>
-<header><h1 class="logo">ArewaDeliver</h1></header>
-
-<main>
-  <div class="form-wrap">
-    <h2>Login</h2>
-    <form id="loginForm">
-      <label>Email</label>
-      <input name="email" type="email" required />
-
-      <label>Password</label>
-      <input name="password" type="password" required />
-
-      <div style="margin-top:12px;display:flex;gap:8px">
-        <button class="btn" type="submit">Login</button>
-        <a class="btn outline" href="register.html">Register</a>
-      </div>
-    </form>
-  </div>
-</main>
-
-<script src="app.js"></script>
-<script>
-  document.getElementById("loginForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const form = e.target;
-
-    const creds = {
-      email: form.email.value.trim().toLowerCase(),
-      password: form.password.value
-    };
-
-    const user = await loginUser(creds);
-    if (!user) {
-      alert("Invalid email or password");
-      return;
-    }
-
-    // Auto-redirect based on role
-    if (user.role === "customer") {
-      location.href = "customer_dashboard.html";
-    } else if (user.role === "vendor") {
-      location.href = "vendor_dashboard.html";
-    } else if (user.role === "rider") {
-      location.href = "rider_dashboard.html";
-    }
-  });
-</script>
-
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>Login</h2>
+  <form method="POST" action="{{ url_for('login') }}">
+    <label>Email</label>
+    <input name="email" type="email" required />
+    <label>Password</label>
+    <input name="password" type="password" required />
+    <div class="form-actions">
+      <button class="btn" type="submit">Login</button>
+      <a class="btn outline" href="{{ url_for('register') }}">Register</a>
+      <a href="{{ url_for('forgot') }}" class="muted">Forgot password?</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

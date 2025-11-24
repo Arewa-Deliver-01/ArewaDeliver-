@@ -1,16 +1,15 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Verify Account</title>
-</head>
-<body>
-    <h2>Enter Verification Code</h2>
-
-    <form action="/verify" method="POST">
-        <label>Verification Code:</label><br>
-        <input type="text" name="code" required><br><br>
-
-        <button type="submit">Verify</button>
-    </form>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Verify{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>Enter Verification Code</h2>
+  <p class="muted">We sent a verification code to your email. (Demo code: <strong>123456</strong>)</p>
+  <form action="{{ url_for('verify') }}" method="POST">
+    <label>Verification Code</label>
+    <input name="code" required />
+    <div style="margin-top:12px">
+      <button class="btn" type="submit">Verify</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,68 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ArewaDeliver — Home</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://unpkg.com/feather-icons"></script>
-  <style>
-    /* small homepage-specific styles/animations */
-    .hero { padding:48px 16px; text-align:center; background:linear-gradient(180deg,#fff8ec,#fff); }
-    .roles { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:16px; max-width:980px; margin:28px auto; }
-    .role-card { background:#fff; padding:18px; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,0.06);
-                 transition:transform .22s, box-shadow .22s; text-decoration:none; color:inherit; display:flex;flex-direction:column; align-items:center; gap:8px; }
-    .role-card:hover{ transform:translateY(-6px); box-shadow:0 12px 30px rgba(0,0,0,0.10); }
-    .role-icon{ width:56px;height:56px;border-radius:12px; display:flex;align-items:center;justify-content:center;background: #c59d45; color:#fff; font-size:22px;}
-    .role-title{ font-weight:700; color:#222; }
-    .sub { color:#666; font-size:14px; }
-    .hero-actions { margin-top:12px; display:flex;gap:8px; justify-content:center; flex-wrap:wrap; }
-  </style>
-</head>
-<body>
-  <header>
-    <h1 class="logo">ArewaDeliver</h1>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="login.html">Login</a>
-      <a href="register.html">Register</a>
-    </nav>
-  </header>
-
-  <main class="hero">
-    <h2>Fast & Reliable Digital Delivery in Katsina</h2>
-    <p class="sub">Order food, groceries and parcels — connect with trusted local riders and vendors.</p>
-
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+  <section class="hero">
+    <h1>Fast & Reliable Delivery in Katsina</h1>
+    <p>Connect with vendors and riders — ArewaDeliver makes deliveries easy.</p>
     <div class="hero-actions">
-      <a class="btn" href="register.html">Create Account</a>
-      <a class="btn outline" href="request.html">Request Delivery</a>
+      <a class="btn" href="{{ url_for('register') }}">Create Account</a>
+      <a class="btn outline" href="{{ url_for('register') }}">Request Delivery</a>
     </div>
-
-    <div class="roles" aria-label="choose role">
-      <a class="role-card" href="register.html" title="Register as Customer">
-        <div class="role-icon"><i data-feather="user"></i></div>
-        <div class="role-title">Customer</div>
-        <div class="sub">Order & track deliveries</div>
-      </a>
-
-      <a class="role-card" href="register.html" title="Register as Vendor">
-        <div class="role-icon"><i data-feather="shopping-bag"></i></div>
-        <div class="role-title">Vendor</div>
-        <div class="sub">Sell & get orders</div>
-      </a>
-
-      <a class="role-card" href="register.html" title="Register as Rider">
-        <div class="role-icon"><i data-feather="truck"></i></div>
-        <div class="role-title">Rider</div>
-        <div class="sub">Deliver & earn</div>
-      </a>
-    </div>
-  </main>
-
-  <footer style="text-align:center;padding:18px 8px;">
-    <small>© 2025 ArewaDeliver — Powered for Katsina</small>
-  </footer>
-
-<script>feather.replace()</script>
-</body>
-</html>
+  </section>
+{% endblock %}

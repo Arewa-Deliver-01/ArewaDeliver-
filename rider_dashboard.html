@@ -1,73 +1,45 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Rider Dashboard — ArewaDeliver</title>
-<link rel="stylesheet" href="style.css"/>
-<style>
-.header-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:18px}
-.card{background:#fff;padding:18px;border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,0.06);border-top:5px solid #c59d45;text-decoration:none;color:inherit}
-.stat{font-size:1.6rem;font-weight:700}
-</style>
-</head>
-<body>
-<header>
-  <h1 class="logo">ArewaDeliver</h1>
-  <nav>
-    <a href="rider_dashboard.html">Dashboard</a>
-    <a href="wallet.html">Wallet</a>
-    <a href="rider.html">Profile</a>
-    <a href="logout.html" id="logoutLink">Logout</a>
-  </nav>
-</header>
+{% extends "base.html" %}
+{% block title %}Rider Dashboard{% endblock %}
+{% block content %}
+<h2>Welcome Rider, {{ user.fullname or user.email }}</h2>
+<p class="muted">View available jobs and manage deliveries.</p>
 
-<main class="dashboard" style="max-width:1100px;margin:18px auto;padding:12px">
-  <div class="header-row">
-    <div>
-      <h2>Welcome Rider</h2>
-      <p class="muted">Available jobs and track your deliveries.</p>
-    </div>
-    <div class="mini-wallet-inline" style="text-align:right">
-      <div style="font-size:0.9rem">Wallet</div>
-      <div id="riderMiniBal" class="stat">₦0</div>
-      <a class="btn outline" href="wallet.html" style="margin-top:8px;display:inline-block">Open Wallet</a>
-    </div>
-  </div>
+<div style="margin-bottom:14px">
+  <button id="btnPerm" class="btn">Enable Notifications</button>
+  <button id="btnSim" class="btn outline">Simulate Job</button>
+</div>
 
-  <div class="grid">
-    <a class="card" href="available_jobs.html">
-      <h3>Available Jobs</h3>
-      <p class="small">Browse jobs you can accept</p>
-    </a>
-
-    <a class="card" href="ongoing_delivery.html">
-      <h3>Ongoing Delivery</h3>
-      <p class="small">View and manage deliveries you accepted</p>
-    </a>
-
-    <a class="card" href="wallet.html">
-      <h3>Wallet</h3>
-      <p class="small">See balance and transactions</p>
-    </a>
-
-    <a class="card" href="profile.html">
-      <h3>Your Profile</h3>
-      <p class="small">Update documents & contact</p>
-    </a>
-  </div>
-</main>
+<div class="grid">
+  <a class="card" href="#">Available Jobs</a>
+  <a class="card" href="#">Ongoing Delivery</a>
+  <a class="card" href="{{ url_for('welcome', role='rider') }}">Wallet</a>
+  <a class="card" href="#">Profile</a>
+</div>
 
 <script>
-(function(){
-  const s = JSON.parse(localStorage.getItem('arewa_session')||'null');
-  const users = JSON.parse(localStorage.getItem('arewa_users')||'[]');
-  const me = users.find(u=>u.id===s?.user_id) || users.find(u=>u.role==='rider');
-  if(me){
-    document.getElementById('riderMiniBal').innerText = '₦'+(me.wallet?.balance || 0);
-  }
-  document.getElementById('logoutLink').addEventListener('click', ()=>{ localStorage.removeItem('arewa_session'); location.href='index.html'; });
-})();
+  document.getElementById('btnPerm').addEventListener('click', async ()=>{
+    if(!('Notification' in window)) return alert('Notifications not supported');
+    const p = await Notification.requestPermission(); if(p==='granted') alert('Notifications allowed');
+  });
+  document.getElementById('btnSim').addEventListener('click', async ()=>{
+    await fetch('/notify', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({role:'rider', message:'Simulated job #'+Math.floor(Math.random()*900+100)})
+    });
+    alert('Simulated job generated');
+  });
+  setInterval(async ()=>{
+    try {
+      const res = await fetch('/notifications'); if(res.status===401) return;
+      const j = await res.json();
+      if(j.ok && j.notifications.length){
+        j.notifications.forEach(n=>{
+          if(Notification.permission==='granted') new Notification('ArewaDeliver', {body:n.message});
+          else alert('Notification: '+n.message);
+        });
+      }
+    } catch(e){console.error(e)}
+  }, 5000);
 </script>
-</body>
-</html>
+{% endblock %}
